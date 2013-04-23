@@ -1,10 +1,10 @@
 [
     {
-      "caption": "Drush: Cache Clear (Clear a specific cache, or all drupal caches.)",
+      "caption": "Drush: Cache Clear (Clear a specific cache, or all drupal caches)",
       "command": "drush_cache_clear"
     },
     {
-      "caption": "Drush: Variable Get",
+      "caption": "Drush: Variable Get (Get a list of some or all site variables and values)",
       "command": "drush_variable_get"
     }
 ]
