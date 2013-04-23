@@ -7,26 +7,45 @@ import sys
 import fnmatch
 import re
 import pprint
+import hashlib
+import pickle
+
+drupal_root = ""
+working_dir = ""
 
 class DrushAPI():
-
-    global working_dir
 
     def get_drush_path(self):
         return subprocess.Popen(['which', 'drush'], stdout=subprocess.PIPE).communicate()[0].decode('utf-8').rstrip()
 
-    def load_commands(self):
-        data = json.loads(subprocess.Popen([self.get_drush_path(), '--format=json'], stdout=subprocess.PIPE).communicate()[0].decode('utf-8'))
-        return data[u'core'][u'commands']
-
     def load_command_info(self, command):
         commands = dict()
-        data = json.loads(subprocess.Popen([self.get_drush_path(), '--format=json'], stdout=subprocess.PIPE).communicate()[0].decode('utf-8'))
+        # Check if cached data exists
+        bin = self.get_cache_bin(self.get_drupal_root())
+        if os.path.isfile(bin + "/commands"):
+            cache_bin = open(bin + "/commands", 'rb')
+            data = pickle.load(cache_bin)
+            cache_bin.close()
+        else:
+            data = json.loads(subprocess.Popen([self.get_drush_path(), '--format=json'], stdout=subprocess.PIPE).communicate()[0].decode('utf-8'))
+            output = open(bin + "/commands", 'wb')
+            pickle.dump(data, output)
+            output.close()
         commands = data[u'core'][u'commands'][command]
         return commands
 
     def load_command_args(self, command):
-        return subprocess.Popen([self.get_drush_path(), '--root=%s' % self.get_drupal_root(), '--pipe', command], stdout=subprocess.PIPE).communicate()[0].decode('utf-8').splitlines()
+        bin = self.get_cache_bin(self.get_drupal_root() + "/" + command)
+        if os.path.isfile(bin + "/" + command):
+            cache_bin = open(bin + "/" + command, 'rb')
+            args = pickle.load(cache_bin)
+            cache_bin.close()
+        else:
+            args = subprocess.Popen([self.get_drush_path(), '--root=%s' % self.get_drupal_root(), '--pipe', command], stdout=subprocess.PIPE).communicate()[0].decode('utf-8').splitlines()
+            output = open(bin + "/" + command, 'wb')
+            pickle.dump(args, output)
+            output.close()
+        return args
 
     def build_command_list(self):
         command = []
@@ -47,6 +66,9 @@ class DrushAPI():
 
     def get_drupal_root(self):
         global working_dir
+        global drupal_root
+        if drupal_root:
+            return drupal_root
         matches = []
         for root, dirnames, filenames in os.walk(working_dir):
             for filename in fnmatch.filter(filenames, 'system.module'):
@@ -60,11 +82,20 @@ class DrushAPI():
             del(paths[-3:-1])
             del(paths[-1])
             drupal_root = "/".join(paths)
+            self.get_cache_bin(drupal_root)
             return drupal_root
         else:
             # @TODO throw error
-            print('error')
+            self.get_cache_bin('drush')
         return working_dir
+
+    def get_cache_bin(self, drupal_root):
+        cache_bin = hashlib.sha224(drupal_root.encode('utf-8')).hexdigest()
+        sublime_cache_path = sublime.cache_path()
+        bin = sublime_cache_path + "/" + "sublime-drush" + "/" + cache_bin
+        if os.path.isdir(bin) == False:
+            os.makedirs(bin)
+        return bin
 
 class DrushVariableGetCommand (sublime_plugin.WindowCommand):
     quick_panel_command_selected_index = None
