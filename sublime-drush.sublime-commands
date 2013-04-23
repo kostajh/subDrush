@@ -2,5 +2,9 @@
     {
       "caption": "Drush: Cache Clear (Clear a specific cache, or all drupal caches.)",
       "command": "drush_cache_clear"
+    },
+    {
+      "caption": "Drush: Variable Get",
+      "command": "drush_variable_get"
     }
 ]

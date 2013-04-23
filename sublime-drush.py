@@ -15,6 +15,10 @@ class DrushAPI():
     def get_drush_path(self):
         return subprocess.Popen(['which', 'drush'], stdout=subprocess.PIPE).communicate()[0].decode('utf-8').rstrip()
 
+    def load_commands(self):
+        data = json.loads(subprocess.Popen([self.get_drush_path(), '--format=json'], stdout=subprocess.PIPE).communicate()[0].decode('utf-8'))
+        return data[u'core'][u'commands']
+
     def load_command_info(self, command):
         commands = dict()
         data = json.loads(subprocess.Popen([self.get_drush_path(), '--format=json'], stdout=subprocess.PIPE).communicate()[0].decode('utf-8'))
@@ -59,7 +63,33 @@ class DrushAPI():
             return drupal_root
         else:
             # @TODO throw error
+            print('error')
         return working_dir
+
+class DrushVariableGetCommand (sublime_plugin.WindowCommand):
+    quick_panel_command_selected_index = None
+
+    def run(self):
+        global args
+        global drush
+        self.view = self.window.active_view()
+        working_dir = self.view.window().folders()
+        drush = DrushAPI()
+        drush.set_working_dir(working_dir[0])
+        command_options = drush.load_command_info('variable-get')
+        variable_data = json.loads(drush.run_command('variable-get', '--format=json'))
+        variables = []
+        for key, value in variable_data.items():
+            if (type(value) is str) and (type(key) is str):
+                variables.append([key, value])
+        args = variables
+        self.window.show_quick_panel(variables, self.command_execution, sublime.MONOSPACE_FONT)
+
+    def command_execution(self, idx):
+        global args
+        global drush
+        ret = drush.run_command('variable-get', args[idx][0])
+        print(ret)
 
 class DrushCacheClearCommand (sublime_plugin.WindowCommand):
     quick_panel_command_selected_index = None

@@ -7,8 +7,7 @@ Commands:
 
 - Cache Clear
 - Module Enable / Disable / Uninstall
-- Variable Get
-- Variable SEt
+- Variable Get / Set
 
 v0.2
 
