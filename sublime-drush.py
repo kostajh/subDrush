@@ -3,12 +3,10 @@ import sublime_plugin
 import subprocess
 import json
 import os
-import sys
 import fnmatch
-import re
-import pprint
 import hashlib
 import pickle
+import time
 
 drupal_root = ""
 working_dir = ""
@@ -21,30 +19,39 @@ class DrushAPI():
     def load_command_info(self, command):
         commands = dict()
         # Check if cached data exists
-        bin = self.get_cache_bin(self.get_drupal_root())
-        if os.path.isfile(bin + "/commands"):
-            cache_bin = open(bin + "/commands", 'rb')
-            data = pickle.load(cache_bin)
-            cache_bin.close()
-        else:
-            data = json.loads(subprocess.Popen([self.get_drush_path(), '--format=json'], stdout=subprocess.PIPE).communicate()[0].decode('utf-8'))
-            output = open(bin + "/commands", 'wb')
-            pickle.dump(data, output)
-            output.close()
+        bin = self.get_cache_bin(self.get_drupal_root()) + "/commands"
+        if os.path.isfile(bin):
+            last_modified = os.path.getmtime(bin)
+            if (time.time() - last_modified < 360):
+                print('load cache')
+                cache_bin = open(bin, 'rb')
+                data = pickle.load(cache_bin)
+                cache_bin.close()
+                commands = data[u'core'][u'commands'][command]
+                return commands
+        print('call drush')
+        data = json.loads(subprocess.Popen([self.get_drush_path(), '--format=json'], stdout=subprocess.PIPE).communicate()[0].decode('utf-8'))
+        output = open(bin, 'wb')
+        pickle.dump(data, output)
+        output.close()
         commands = data[u'core'][u'commands'][command]
         return commands
 
     def load_command_args(self, command):
-        bin = self.get_cache_bin(self.get_drupal_root() + "/" + command)
-        if os.path.isfile(bin + "/" + command):
-            cache_bin = open(bin + "/" + command, 'rb')
-            args = pickle.load(cache_bin)
-            cache_bin.close()
-        else:
-            args = subprocess.Popen([self.get_drush_path(), '--root=%s' % self.get_drupal_root(), '--pipe', command], stdout=subprocess.PIPE).communicate()[0].decode('utf-8').splitlines()
-            output = open(bin + "/" + command, 'wb')
-            pickle.dump(args, output)
-            output.close()
+        bin = self.get_cache_bin(self.get_drupal_root() + "/" + command) + "/" + command
+        if os.path.isfile(bin):
+            cache_bin = open(bin, 'rb')
+            last_modified = os.path.getmtime(bin)
+            if (time.time() - last_modified < 360):
+                print('load cache')
+                args = pickle.load(cache_bin)
+                cache_bin.close()
+                return args
+        print('call drush')
+        args = subprocess.Popen([self.get_drush_path(), '--root=%s' % self.get_drupal_root(), '--pipe', command], stdout=subprocess.PIPE).communicate()[0].decode('utf-8').splitlines()
+        output = open(bin, 'wb')
+        pickle.dump(args, output)
+        output.close()
         return args
 
     def build_command_list(self):
@@ -57,7 +64,6 @@ class DrushAPI():
         cmd = self.build_command_list()
         cmd.append(command)
         cmd.append(args)
-        print(cmd)
         return subprocess.Popen(cmd, stdout=subprocess.PIPE).communicate()[0].decode('utf-8')
 
     def set_working_dir(self, directory):
@@ -79,6 +85,7 @@ class DrushAPI():
         if len(matches) > 0:
             # Get path to Drupal root
             paths = matches[0].split('/')
+            # @TODO Ugly, but works
             del(paths[-3:-1])
             del(paths[-1])
             drupal_root = "/".join(paths)
