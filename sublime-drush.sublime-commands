@@ -6,5 +6,13 @@
     {
       "caption": "Drush: Variable Get (Get a list of some or all site variables and values)",
       "command": "drush_variable_get"
+    },
+    {
+      "caption": "Drush: Download (Download Drupal core or projects from drupal.org)",
+      "command": "drush_download"
+    },
+    {
+      "caption": "Sublime Drush: Clear Sublime Drush cache",
+      "command": "sublime_drush_cache_clear"
     }
 ]

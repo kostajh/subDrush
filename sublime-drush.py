@@ -7,9 +7,13 @@ import fnmatch
 import hashlib
 import pickle
 import time
+import xml.etree.ElementTree as ET
+import urllib
+import shutil
 
 drupal_root = ""
 working_dir = ""
+drush_api = ""
 
 class DrushAPI():
 
@@ -27,8 +31,9 @@ class DrushAPI():
                 cache_bin = open(bin, 'rb')
                 data = pickle.load(cache_bin)
                 cache_bin.close()
-                commands = data[u'core'][u'commands'][command]
-                return commands
+                if command in data[u'core'][u'commands']:
+                    commands = data[u'core'][u'commands'][command]
+                    return commands
         print('call drush')
         data = json.loads(subprocess.Popen([self.get_drush_path(), '--format=json'], stdout=subprocess.PIPE).communicate()[0].decode('utf-8'))
         output = open(bin, 'wb')
@@ -105,6 +110,8 @@ class DrushAPI():
         return bin
 
 class DrushVariableGetCommand (sublime_plugin.WindowCommand):
+    global drush_api
+    drush_api = DrushAPI()
     quick_panel_command_selected_index = None
 
     def run(self):
@@ -112,39 +119,93 @@ class DrushVariableGetCommand (sublime_plugin.WindowCommand):
         global drush
         self.view = self.window.active_view()
         working_dir = self.view.window().folders()
-        drush = DrushAPI()
-        drush.set_working_dir(working_dir[0])
-        command_options = drush.load_command_info('variable-get')
-        variable_data = json.loads(drush.run_command('variable-get', '--format=json'))
+        drush_api.set_working_dir(working_dir[0])
+        variable_data = json.loads(drush_api.run_command('variable-get', '--format=json'))
         variables = []
         for key, value in variable_data.items():
             if (type(value) is str) and (type(key) is str):
                 variables.append([key, value])
-        args = variables
+        self.args = variables
         self.window.show_quick_panel(variables, self.command_execution, sublime.MONOSPACE_FONT)
 
     def command_execution(self, idx):
         global args
-        global drush
-        ret = drush.run_command('variable-get', args[idx][0])
-        print(ret)
+        global drush_api
+        drush_api.run_command('variable-get', self.args[idx][0])
 
 class DrushCacheClearCommand (sublime_plugin.WindowCommand):
     quick_panel_command_selected_index = None
+    global drush_api
+    drush_api = DrushAPI()
 
     def run(self):
-        global args
-        global drush
+        global drush_api
         self.view = self.window.active_view()
         working_dir = self.view.window().folders()
-        drush = DrushAPI()
-        drush.set_working_dir(working_dir[0])
-        command_options = drush.load_command_info('cache-clear')
-        args = drush.load_command_args('cache-clear')
-        self.window.show_quick_panel(args, self.command_execution, sublime.MONOSPACE_FONT)
+        drush_api.set_working_dir(working_dir[0])
+        self.args = drush_api.load_command_args('cache-clear')
+        self.window.show_quick_panel(self.args, self.command_execution, sublime.MONOSPACE_FONT)
 
     def command_execution(self, idx):
-        global args
-        global drush
-        ret = drush.run_command('cache-clear', args[idx])
+        global drush_api
+        drush_api.run_command('cache-clear', self.args[idx])
 
+class DrushDownloadCommand (sublime_plugin.WindowCommand):
+    quick_panel_command_selected_index = None
+    global drush_api
+    drush_api = DrushAPI()
+
+    def run(self):
+        global drush_api
+        self.view = self.window.active_view()
+        working_dir = self.view.window().folders()
+        drush_api.set_working_dir(working_dir[0])
+        bin = drush_api.get_cache_bin("drush") + '/projects.json'
+
+        projects = []
+        if os.path.isfile(bin):
+            cache_bin = open(bin, 'rb')
+            projects = pickle.load(cache_bin)
+            cache_bin.close()
+        else:
+            response = urllib.request.urlopen('http://updates.drupal.org/release-history/project-list/all')
+            xml = response.read()
+            root = ET.fromstring(xml)
+            for child in root:
+                project = dict()
+                # Ignore sandbox projects
+                if 'sandbox' in child[2].text:
+                    continue
+                project['shortname'] = child[1].text
+                project['title'] = child[0].text
+                projects.append(project)
+            print('writing to project cache')
+            output = open(bin, 'wb')
+            pickle.dump(projects, output)
+            output.close
+
+        # pprint.pprint(projects)
+        project_list = list()
+        for item in projects:
+            project_list.append([item[u'title'], item[u'shortname']])
+        self.args = project_list
+        self.window.show_quick_panel(self.args, self.command_execution, sublime.MONOSPACE_FONT)
+
+    def command_execution(self, idx):
+        global drush_api
+        drush_api.run_command('pm-download', self.args[idx][1])
+
+class SublimeDrushCacheClearCommand (sublime_plugin.WindowCommand):
+    def run(self):
+        print('clear')
+        sublime_cache_path = sublime.cache_path()
+        bin = sublime_cache_path + "/" + "sublime-drush"
+        print(bin)
+        shutil.rmtree(bin)
+        os.makedirs(bin)
+
+class SublimeDrush(sublime_plugin.EventListener):
+    def on_load(self, view):
+        global drush_api
+        drush_api = DrushAPI()
+        drush_api.load_command_args('core-status')
