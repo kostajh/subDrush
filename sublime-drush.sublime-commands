@@ -4,6 +4,10 @@
       "command": "drush_cache_clear"
     },
     {
+      "caption": "Drush: Cache Clear All (Clear all caches)",
+      "command": "drush_cache_clear_all"
+    },
+    {
       "caption": "Drush: Variable Get (Get a list of some or all site variables and values)",
       "command": "drush_variable_get"
     },
