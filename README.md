@@ -1,10 +1,11 @@
 Sublime Drush
 =============
 
-v0.1
+This is a plugin for Sublime Text 3 (ST3) that exposes some [Drush](http://drush.ws) functionality.
 
-Commands:
+Supported Commands:
 
-- Cache Clear
-- Module Enable / Disable / Uninstall
-- Variable Get / Set
+- Cache Clear (select a cache bin)
+- Cache Clear All
+- Variable Get
+- Download
