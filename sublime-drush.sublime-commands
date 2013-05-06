@@ -18,5 +18,9 @@
     {
       "caption": "Sublime Drush: Clear Sublime Drush cache",
       "command": "sublime_drush_cache_clear"
+    },
+    {
+      "caption": "Drush: Watchdog Show",
+      "command": "drush_watchdog_show",
     }
 ]
