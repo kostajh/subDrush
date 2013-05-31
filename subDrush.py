@@ -52,11 +52,9 @@ class DrushAPI():
             cache_bin = open(bin, 'rb')
             last_modified = os.path.getmtime(bin)
             if (time.time() - last_modified < 360):
-                print('load cache')
                 args = pickle.load(cache_bin)
                 cache_bin.close()
                 return args
-        print('call drush')
         args = subprocess.Popen([self.get_drush_path(), '--root=%s' % self.get_drupal_root(
         ), '--pipe', command], stdout=subprocess.PIPE).communicate()[0].decode('utf-8').splitlines()
         output = open(bin, 'wb')
@@ -205,7 +203,6 @@ class DrushDownloadCommand (sublime_plugin.WindowCommand):
                 project['shortname'] = child[1].text
                 project['title'] = child[0].text
                 projects.append(project)
-            print('writing to project cache')
             output = open(bin, 'wb')
             pickle.dump(projects, output)
             output.close
@@ -236,7 +233,6 @@ class DrushWatchdogShowCommand (sublime_plugin.WindowCommand):
         test = 'hello'
         self.panel.run_command('drush_watchdog_show_output', {
                                "panel": "output.%s" % test})
-        print('run')
 
     def on_done(self):
         print('done')
