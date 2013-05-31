@@ -1,16 +1,21 @@
 subDrush
 =============
 
-subDrush is plugin for Sublime Text 3 (ST3) that exposes a subset of [Drush](http://drush.ws) functionality. The idea is that there are some commands that can and should be executed from within ST, such as clearing caches, getting values of variables, downloading modules, and enabling or disabling modules. For other Drush commands, use your terminal.
+subDrush is plugin for Sublime Text 3 (ST3) that exposes a subset of [Drush](http://drush.ws) functionality. This is not an attempt to bring the entirety of Drush into Sublime Text, which doesn't work well conceptually or on a practical level.
+
+Instead the idea is that there are some commands that can be executed easily from within ST, such as clearing caches, getting values of variables, enabling or disabling modules and themes, etc. These commands don't rely on options and don't produce much output, and do not require additional user input to run.
+
+For other Drush commands, use your terminal.
 
 ### Requirements
 
-- [Drush 6](http://drush.ws).
-- Possibly, Mac OS. Hasn't been tested in Windows. Linux should be fine but please report back if it doesn't work.
+- [Drush 6](http://drush.ws)
+- Sublime Text 3
+- Possibly, Mac OS. Hasn't been tested in Windows. Linux should be fine but please report back if it doesn't work
  
 ### Installation
 
-Clone this repository into ~/Library/Application Support/Sublime Text 3/Packages.
+Clone this repository into `~/Library/Application Support/Sublime Text 3/Packages.`
 
 ### Supported Commands
 
@@ -20,7 +25,6 @@ Clone this repository into ~/Library/Application Support/Sublime Text 3/Packages
 #### In progress
 
 - Variable Get
-- Download
 
 #### Planned
 
