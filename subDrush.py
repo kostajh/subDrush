@@ -115,12 +115,12 @@ class DrushAPI():
 
 
 class DrushVariableGetCommand (sublime_plugin.WindowCommand):
-    global drush_api
     quick_panel_command_selected_index = None
 
     def run(self):
         global args
         global drush
+        drush_api = DrushAPI()
         self.view = self.window.active_view()
         working_dir = self.view.window().folders()
         drush_api.set_working_dir(working_dir[0])
@@ -141,8 +141,9 @@ class DrushVariableGetCommand (sublime_plugin.WindowCommand):
 
 
 class DrushCacheClearAllCommand (sublime_plugin.WindowCommand):
-
+    
     def run(self):
+        drush_api = DrushAPI()
         self.view = self.window.active_view()
         working_dir = self.view.window().folders()
         drush_api.set_working_dir(working_dir[0])
@@ -155,6 +156,7 @@ class DrushCacheClearCommand (sublime_plugin.WindowCommand):
     quick_panel_command_selected_index = None
 
     def run(self):
+        drush_api = DrushAPI()
         self.view = self.window.active_view()
         working_dir = self.view.window().folders()
         drush_api.set_working_dir(working_dir[0])
@@ -174,10 +176,9 @@ class DrushCacheClearCommand (sublime_plugin.WindowCommand):
 
 class DrushDownloadCommand (sublime_plugin.WindowCommand):
     quick_panel_command_selected_index = None
-    global drush_api
 
     def run(self):
-        global drush_api
+        drush_api = DrushAPI()
         self.view = self.window.active_view()
         working_dir = self.view.window().folders()
         drush_api.set_working_dir(working_dir[0])
