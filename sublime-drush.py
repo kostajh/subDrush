@@ -36,7 +36,8 @@ class DrushAPI():
                     commands = data[u'core'][u'commands'][command]
                     return commands
         print('call drush')
-        data = json.loads(subprocess.Popen([self.get_drush_path(), '--format=json'], stdout=subprocess.PIPE).communicate()[0].decode('utf-8'))
+        data = json.loads(subprocess.Popen(
+            [self.get_drush_path(), '--format=json'], stdout=subprocess.PIPE).communicate()[0].decode('utf-8'))
         output = open(bin, 'wb')
         pickle.dump(data, output)
         output.close()
@@ -44,7 +45,8 @@ class DrushAPI():
         return commands
 
     def load_command_args(self, command):
-        bin = self.get_cache_bin(self.get_drupal_root() + "/" + command) + "/" + command
+        bin = self.get_cache_bin(
+            self.get_drupal_root() + "/" + command) + "/" + command
         if os.path.isfile(bin):
             cache_bin = open(bin, 'rb')
             last_modified = os.path.getmtime(bin)
@@ -54,7 +56,8 @@ class DrushAPI():
                 cache_bin.close()
                 return args
         print('call drush')
-        args = subprocess.Popen([self.get_drush_path(), '--root=%s' % self.get_drupal_root(), '--pipe', command], stdout=subprocess.PIPE).communicate()[0].decode('utf-8').splitlines()
+        args = subprocess.Popen([self.get_drush_path(), '--root=%s' % self.get_drupal_root(
+        ), '--pipe', command], stdout=subprocess.PIPE).communicate()[0].decode('utf-8').splitlines()
         output = open(bin, 'wb')
         pickle.dump(args, output)
         output.close()
@@ -91,14 +94,14 @@ class DrushAPI():
         if len(matches) > 0:
             # Get path to Drupal root
             paths = matches[0].split('/')
-            # @TODO Ugly, but works
+            # Ugly, but works
             del(paths[-3:-1])
             del(paths[-1])
             drupal_root = "/".join(paths)
             self.get_cache_bin(drupal_root)
             return drupal_root
         else:
-            # @TODO throw error
+            # Default to Drush cache bin.
             self.get_cache_bin('drush')
             return 'drush'
         return working_dir
@@ -114,7 +117,7 @@ class DrushAPI():
 
 class DrushVariableGetCommand (sublime_plugin.WindowCommand):
     global drush_api
-    drush_api = DrushAPI()
+    # drush_api = DrushAPI()
     quick_panel_command_selected_index = None
 
     def run(self):
@@ -123,13 +126,15 @@ class DrushVariableGetCommand (sublime_plugin.WindowCommand):
         self.view = self.window.active_view()
         working_dir = self.view.window().folders()
         drush_api.set_working_dir(working_dir[0])
-        variable_data = json.loads(drush_api.run_command('variable-get', '--format=json'))
+        variable_data = json.loads(drush_api.run_command(
+            'variable-get', '--format=json'))
         variables = []
         for key, value in variable_data.items():
             if (type(value) is str) and (type(key) is str):
                 variables.append([key, value])
         self.args = variables
-        self.window.show_quick_panel(variables, self.command_execution, sublime.MONOSPACE_FONT)
+        self.window.show_quick_panel(
+            variables, self.command_execution, sublime.MONOSPACE_FONT)
 
     def command_execution(self, idx):
         global args
@@ -139,7 +144,7 @@ class DrushVariableGetCommand (sublime_plugin.WindowCommand):
 
 class DrushCacheClearAllCommand (sublime_plugin.WindowCommand):
     global drush_api
-    drush_api = DrushAPI()
+    # drush_api = DrushAPI()
 
     def run(self):
         self.view = self.window.active_view()
@@ -153,7 +158,7 @@ class DrushCacheClearAllCommand (sublime_plugin.WindowCommand):
 class DrushCacheClearCommand (sublime_plugin.WindowCommand):
     quick_panel_command_selected_index = None
     global drush_api
-    drush_api = DrushAPI()
+    # drush_api = DrushAPI()
 
     def run(self):
         global drush_api
@@ -161,7 +166,8 @@ class DrushCacheClearCommand (sublime_plugin.WindowCommand):
         working_dir = self.view.window().folders()
         drush_api.set_working_dir(working_dir[0])
         self.args = drush_api.load_command_args('cache-clear')
-        self.window.show_quick_panel(self.args, self.command_execution, sublime.MONOSPACE_FONT)
+        self.window.show_quick_panel(
+            self.args, self.command_execution, sublime.MONOSPACE_FONT)
 
     def command_execution(self, idx):
         global drush_api
@@ -170,13 +176,14 @@ class DrushCacheClearCommand (sublime_plugin.WindowCommand):
         if drupal_root == self.args[idx]:
             sublime.status_message("Cleared '%s' cache" % self.args[idx])
         else:
-            sublime.status_message("Cleared '%s' cache for '%s'" % (self.args[idx], drush_api.get_drupal_root()))
+            sublime.status_message("Cleared '%s' cache for '%s'" % (
+                self.args[idx], drush_api.get_drupal_root()))
 
 
 class DrushDownloadCommand (sublime_plugin.WindowCommand):
     quick_panel_command_selected_index = None
     global drush_api
-    drush_api = DrushAPI()
+    # drush_api = DrushAPI()
 
     def run(self):
         global drush_api
@@ -184,15 +191,17 @@ class DrushDownloadCommand (sublime_plugin.WindowCommand):
         working_dir = self.view.window().folders()
         drush_api.set_working_dir(working_dir[0])
         bin = drush_api.get_cache_bin("drush") + '/projects.json'
-        # @TODO - Check if cache is older than 24 hours.
+        # TODO - Check if cache is older than 24 hours or a user-configurable limit.
         projects = []
         if os.path.isfile(bin):
             cache_bin = open(bin, 'rb')
             projects = pickle.load(cache_bin)
             cache_bin.close()
         else:
-            sublime.status_message("Downloading Drupal.org project data, this could take about 30 seconds.")
-            response = urllib.request.urlopen('http://updates.drupal.org/release-history/project-list/all')
+            sublime.status_message(
+                "Downloading Drupal.org project data, this could take about 30 seconds.")
+            response = urllib.request.urlopen(
+                'http://updates.drupal.org/release-history/project-list/all')
             xml = response.read()
             root = ET.fromstring(xml)
             for child in root:
@@ -212,28 +221,36 @@ class DrushDownloadCommand (sublime_plugin.WindowCommand):
         for item in projects:
             project_list.append([item[u'title'], item[u'shortname']])
         self.args = project_list
-        self.window.show_quick_panel(self.args, self.command_execution, sublime.MONOSPACE_FONT)
+        self.window.show_quick_panel(
+            self.args, self.command_execution, sublime.MONOSPACE_FONT)
 
     def command_execution(self, idx):
         global drush_api
         drush_api.run_command('pm-download', self.args[idx][1])
-        sublime.status_message("Downloaded '%s' to %s" % (self.args[idx][1], drush_api.get_drupal_root()))
+        sublime.status_message("Downloaded '%s' to %s" % (
+            self.args[idx][1], drush_api.get_drupal_root()))
 
 
 class DrushWatchdogShowCommand (sublime_plugin.WindowCommand):
+
     def run(self):
         self.panel_name = 'watchdog'
         self.window.create_output_panel(self.panel_name)
         self.panel = self.window.get_output_panel('watchdog')
         self.view = self.window.active_view()
-        # self.window.run_command("show_panel", {"panel": "output.%s" % self.panel_name})
+        # self.window.run_command("show_panel", {"panel": "output.%s" %
+        # self.panel_name})
         test = 'hello'
-        self.panel.run_command('drush_watchdog_show_output', {"panel": "output.%s" % test})
+        self.panel.run_command('drush_watchdog_show_output', {
+                               "panel": "output.%s" % test})
         print('run')
+
     def on_done(self):
         print('done')
 
+
 class DrushWatchdogShowOutputCommand (sublime_plugin.TextCommand):
+
     def run(self, edit, output):
         print('test')
         self.view.insert(edit, self.view.size(), output)
@@ -241,6 +258,7 @@ class DrushWatchdogShowOutputCommand (sublime_plugin.TextCommand):
 
 
 class SublimeDrushCacheClearCommand (sublime_plugin.WindowCommand):
+
     def run(self):
         print('clear')
         sublime_cache_path = sublime.cache_path()
@@ -252,7 +270,8 @@ class SublimeDrushCacheClearCommand (sublime_plugin.WindowCommand):
 
 
 class SublimeDrush(sublime_plugin.EventListener):
-    def on_load(self, view):
+
+    def on_load_async(self, view):
         global drush_api
         drush_api = DrushAPI()
         drush_api.load_command_args('core-status')
