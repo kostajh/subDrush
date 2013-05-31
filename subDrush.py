@@ -141,7 +141,7 @@ class DrushVariableGetCommand (sublime_plugin.WindowCommand):
 
 
 class DrushCacheClearAllCommand (sublime_plugin.WindowCommand):
-    
+
     def run(self):
         drush_api = DrushAPI()
         self.view = self.window.active_view()
@@ -172,54 +172,6 @@ class DrushCacheClearCommand (sublime_plugin.WindowCommand):
         else:
             sublime.status_message("Cleared '%s' cache for '%s'" % (
                 self.args[idx], drush_api.get_drupal_root()))
-
-
-class DrushDownloadCommand (sublime_plugin.WindowCommand):
-    quick_panel_command_selected_index = None
-
-    def run(self):
-        drush_api = DrushAPI()
-        self.view = self.window.active_view()
-        working_dir = self.view.window().folders()
-        drush_api.set_working_dir(working_dir[0])
-        bin = drush_api.get_cache_bin("drush") + '/projects.json'
-        # TODO - Check if cache is older than 24 hours or a user-configurable limit.
-        projects = []
-        if os.path.isfile(bin):
-            cache_bin = open(bin, 'rb')
-            projects = pickle.load(cache_bin)
-            cache_bin.close()
-        else:
-            sublime.status_message(
-                "Downloading Drupal.org project data, this could take about 30 seconds.")
-            response = urllib.request.urlopen(
-                'http://updates.drupal.org/release-history/project-list/all')
-            xml = response.read()
-            root = ET.fromstring(xml)
-            for child in root:
-                project = dict()
-                # Ignore sandbox projects
-                if 'sandbox' in child[2].text:
-                    continue
-                project['shortname'] = child[1].text
-                project['title'] = child[0].text
-                projects.append(project)
-            output = open(bin, 'wb')
-            pickle.dump(projects, output)
-            output.close
-
-        project_list = list()
-        for item in projects:
-            project_list.append([item[u'title'], item[u'shortname']])
-        self.args = project_list
-        self.window.show_quick_panel(
-            self.args, self.command_execution, sublime.MONOSPACE_FONT)
-
-    def command_execution(self, idx):
-        global drush_api
-        drush_api.run_command('pm-download', self.args[idx][1])
-        sublime.status_message("Downloaded '%s' to %s" % (
-            self.args[idx][1], drush_api.get_drupal_root()))
 
 
 class DrushWatchdogShowCommand (sublime_plugin.WindowCommand):
