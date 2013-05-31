@@ -10,6 +10,7 @@ import time
 import xml.etree.ElementTree as ET
 import urllib
 import shutil
+import pprint
 
 drupal_root = ""
 working_dir = ""
@@ -23,19 +24,19 @@ class DrushAPI():
 
     def load_command_info(self, command):
         commands = dict()
-        # Check if cached data exists
+        """ Check if cached data exists. If cache is older than a minute, don't
+            use it.
+        """
         bin = self.get_cache_bin(self.get_drupal_root()) + "/commands"
         if os.path.isfile(bin):
             last_modified = os.path.getmtime(bin)
             if (time.time() - last_modified < 360):
-                print('load cache')
                 cache_bin = open(bin, 'rb')
                 data = pickle.load(cache_bin)
                 cache_bin.close()
                 if command in data[u'core'][u'commands']:
                     commands = data[u'core'][u'commands'][command]
                     return commands
-        print('call drush')
         data = json.loads(subprocess.Popen(
             [self.get_drush_path(), '--format=json'], stdout=subprocess.PIPE).communicate()[0].decode('utf-8'))
         output = open(bin, 'wb')
@@ -117,7 +118,6 @@ class DrushAPI():
 
 class DrushVariableGetCommand (sublime_plugin.WindowCommand):
     global drush_api
-    # drush_api = DrushAPI()
     quick_panel_command_selected_index = None
 
     def run(self):
@@ -143,8 +143,6 @@ class DrushVariableGetCommand (sublime_plugin.WindowCommand):
 
 
 class DrushCacheClearAllCommand (sublime_plugin.WindowCommand):
-    global drush_api
-    # drush_api = DrushAPI()
 
     def run(self):
         self.view = self.window.active_view()
@@ -157,11 +155,8 @@ class DrushCacheClearAllCommand (sublime_plugin.WindowCommand):
 
 class DrushCacheClearCommand (sublime_plugin.WindowCommand):
     quick_panel_command_selected_index = None
-    global drush_api
-    # drush_api = DrushAPI()
 
     def run(self):
-        global drush_api
         self.view = self.window.active_view()
         working_dir = self.view.window().folders()
         drush_api.set_working_dir(working_dir[0])
@@ -170,7 +165,6 @@ class DrushCacheClearCommand (sublime_plugin.WindowCommand):
             self.args, self.command_execution, sublime.MONOSPACE_FONT)
 
     def command_execution(self, idx):
-        global drush_api
         drush_api.run_command('cache-clear', self.args[idx])
         drupal_root = drush_api.get_drupal_root()
         if drupal_root == self.args[idx]:
@@ -183,7 +177,6 @@ class DrushCacheClearCommand (sublime_plugin.WindowCommand):
 class DrushDownloadCommand (sublime_plugin.WindowCommand):
     quick_panel_command_selected_index = None
     global drush_api
-    # drush_api = DrushAPI()
 
     def run(self):
         global drush_api
@@ -260,10 +253,8 @@ class DrushWatchdogShowOutputCommand (sublime_plugin.TextCommand):
 class SublimeDrushCacheClearCommand (sublime_plugin.WindowCommand):
 
     def run(self):
-        print('clear')
         sublime_cache_path = sublime.cache_path()
         bin = sublime_cache_path + "/" + "sublime-drush"
-        print(bin)
         shutil.rmtree(bin)
         os.makedirs(bin)
         sublime.status_message("Cleared Sublime Drush plugin cache")
@@ -273,5 +264,6 @@ class SublimeDrush(sublime_plugin.EventListener):
 
     def on_load_async(self, view):
         global drush_api
-        drush_api = DrushAPI()
+        if not drush_api:
+            drush_api = DrushAPI()
         drush_api.load_command_args('core-status')
