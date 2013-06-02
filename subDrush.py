@@ -11,6 +11,7 @@ import xml.etree.ElementTree as ET
 import urllib
 import shutil
 import pprint
+import threading
 
 drupal_root = ""
 working_dir = ""
@@ -200,13 +201,26 @@ class DrushWatchdogShowOutputCommand (sublime_plugin.TextCommand):
 
 
 class SublimeDrushCacheClearCommand (sublime_plugin.WindowCommand):
+    """
+    A command that clears this plugin's cache.
+    """
+
+    def run(self):
+        thread = SublimeDrushCacheClearThread()
+        thread.start()
+        ThreadProgress(thread, 'Clearing Sublime Drush plugin cache', '')
+        sublime.status_message("Cleared Sublime Drush plugin cache")
+
+class SublimeDrushCacheClearThread (threading.Thread):
+    """
+    A thread to clear the Sublime Drush plugin cache.
+    """
 
     def run(self):
         sublime_cache_path = sublime.cache_path()
         bin = sublime_cache_path + "/" + "sublime-drush"
         shutil.rmtree(bin)
         os.makedirs(bin)
-        sublime.status_message("Cleared Sublime Drush plugin cache")
 
 
 class SublimeDrush(sublime_plugin.EventListener):
