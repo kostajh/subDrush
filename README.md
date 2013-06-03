@@ -10,19 +10,17 @@ This is not an attempt to bring the entirety of Drush into Sublime Text, which d
 - [Drush 6](https://drupal.org/project/drush)
 - Sublime Text 3
 - Only Mac OS 10.8 has been tested so far. Linux should be okay, not sure about Windows.
- 
+
 ### Installation
 
 Clone this repository into `~/Library/Application Support/Sublime Text 3/Packages/`
 
 ### Supported Commands
 
-- `cache-clear` (select a specific cache bin)
+- `cache-clear` (Select a specific cache bin)
 - `cache-clear all`
-
-#### In Progress
-
-- `variable-get`
+- `watchdog-show` (Displays the 10 most recent watchdog entries)
+- `variable-get` (Displays the value associated with a Drupal variable)
 
 #### Planned
 
@@ -31,4 +29,3 @@ Clone this repository into `~/Library/Application Support/Sublime Text 3/Package
 - `pm-enable` and `pm-disable`
 - `reinstall` (`pm-disable && pm-uninstall && pm-enable`)
 - `php-script` and `eval`
-- `watchdog-show`
