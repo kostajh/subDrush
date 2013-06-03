@@ -20,11 +20,11 @@ class DrushVariableGetCommand (sublime_plugin.WindowCommand):
         self.drush_api.set_working_dir(working_dir[0])
         variables = self.drush_api.run_command('variable-get', '--format=json')
         if not variables:
-            sublime.status_message('No variables were found. Make sure you \
-            " are working in a Drupal directory.')
+            sublime.status_message('No variables were found. Make sure you'
+                                   ' are working in a Drupal directory.')
             return
-        sublime.status_message('Loaded variables. Select one to display its \
-            " value in the output panel.')
+        sublime.status_message('Loaded variables. Select one to display its'
+                               ' value in the output panel.')
         variable_data = json.loads(variables)
         variables = []
         for key, value in variable_data.items():
