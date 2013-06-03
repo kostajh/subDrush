@@ -5,6 +5,9 @@ import sublime
 import sublime_plugin
 
 class DrushVariableGetCommand (sublime_plugin.WindowCommand):
+    """
+    A command to return the value of a Drupal variable.
+    """
     quick_panel_command_selected_index = None
 
     def run(self):

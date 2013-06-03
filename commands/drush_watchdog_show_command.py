@@ -5,7 +5,9 @@ import sublime
 import sublime_plugin
 
 class DrushWatchdogShowCommand (sublime_plugin.WindowCommand):
-
+    """
+    A command to display Drupal's watchdog log.
+    """
     def run(self):
         self.panel_name = 'watchdog'
         self.window.create_output_panel(self.panel_name)
