@@ -8,23 +8,29 @@ import time
 
 import sublime
 
-drupal_root = ""
 working_dir = ""
 drush_api = ""
 
 
 class DrushAPI():
 
+    def __init__(self):
+        self.drupal_root = ""
+
     def get_drush_path(self):
+        """
+        Get the path to the Drush executable.
+        """
         return subprocess.Popen(['which', 'drush'],
                                 stdout=subprocess.PIPE
                                 ).communicate()[0].decode('utf-8').rstrip()
 
     def load_command_info(self, command):
-        commands = dict()
-        """ Check if cached data exists. If cache is older than a minute, don't
-            use it.
         """
+        Check if cached data exists. If cache is older than a minute, don't
+        use it.
+        """
+        commands = dict()
         bin = self.get_cache_bin(self.get_drupal_root()) + "/commands"
         if os.path.isfile(bin):
             last_modified = os.path.getmtime(bin)
@@ -80,16 +86,16 @@ class DrushAPI():
                                 ).communicate()[0].decode('utf-8')
 
     def set_working_dir(self, directory):
-        global working_dir
-        working_dir = directory
+        self.working_dir = directory
 
     def get_drupal_root(self):
-        global working_dir
-        global drupal_root
-        if drupal_root:
-            return drupal_root
+        if self.drupal_root:
+            return self.drupal_root
+        if not self.working_dir:
+            # If the working directory hasn't been set, return "drush"
+            return 'drush'
         matches = []
-        for root, dirnames, filenames in os.walk(working_dir):
+        for root, dirnames, filenames in os.walk(self.working_dir):
             for filename in fnmatch.filter(filenames, 'system.module'):
                 matches.append(os.path.join(root, filename))
                 break
@@ -108,7 +114,7 @@ class DrushAPI():
             # Default to Drush cache bin.
             self.get_cache_bin('drush')
             return 'drush'
-        return working_dir
+        return self.working_dir
 
     def get_cache_bin(self, drupal_root):
         cache_bin = hashlib.sha224(drupal_root.encode('utf-8')).hexdigest()
