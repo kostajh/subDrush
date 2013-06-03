@@ -4,7 +4,8 @@ from ..lib.drush import DrushAPI
 import sublime
 import sublime_plugin
 
-class DrushWatchdogShowCommand (sublime_plugin.WindowCommand):
+
+class DrushWatchdogShowCommand(sublime_plugin.WindowCommand):
     """
     A command to display Drupal's watchdog log.
     """
@@ -23,7 +24,7 @@ class DrushWatchdogShowCommand (sublime_plugin.WindowCommand):
         print('done')
 
 
-class DrushWatchdogShowOutputCommand (sublime_plugin.TextCommand):
+class DrushWatchdogShowOutputCommand(sublime_plugin.TextCommand):
 
     def run(self, edit, output):
         print('test')

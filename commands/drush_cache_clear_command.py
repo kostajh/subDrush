@@ -4,7 +4,8 @@ from ..lib.drush import DrushAPI
 import sublime
 import sublime_plugin
 
-class DrushCacheClearCommand (sublime_plugin.WindowCommand):
+
+class DrushCacheClearCommand(sublime_plugin.WindowCommand):
     """
     A command to clear a specific cache bin.
     """
@@ -30,17 +31,17 @@ class DrushCacheClearCommand (sublime_plugin.WindowCommand):
         thread.start()
 
 
-class DrushCacheClearThread (threading.Thread):
+class DrushCacheClearThread(threading.Thread):
     """
     A thread to clear a specific cache bin.
     """
-    def __init__ (self, window, args, idx):
+    def __init__(self, window, args, idx):
         self.window = window
         self.args = args
         self.idx = idx
         threading.Thread.__init__(self)
 
-    def run (self) :
+    def run(self):
         drush_api = DrushAPI()
         drush_api.run_command('cache-clear', self.args[self.idx])
         drupal_root = drush_api.get_drupal_root()

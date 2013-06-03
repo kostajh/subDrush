@@ -12,10 +12,13 @@ drupal_root = ""
 working_dir = ""
 drush_api = ""
 
+
 class DrushAPI():
 
     def get_drush_path(self):
-        return subprocess.Popen(['which', 'drush'], stdout=subprocess.PIPE).communicate()[0].decode('utf-8').rstrip()
+        return subprocess.Popen(['which', 'drush'],
+                                stdout=subprocess.PIPE
+                                ).communicate()[0].decode('utf-8').rstrip()
 
     def load_command_info(self, command):
         commands = dict()
@@ -32,8 +35,10 @@ class DrushAPI():
                 if command in data[u'core'][u'commands']:
                     commands = data[u'core'][u'commands'][command]
                     return commands
-        data = json.loads(subprocess.Popen(
-            [self.get_drush_path(), '--format=json'], stdout=subprocess.PIPE).communicate()[0].decode('utf-8'))
+        data = json.loads(
+            subprocess.Popen([self.get_drush_path(), '--format=json'],
+                             stdout=subprocess.PIPE
+                             ).communicate()[0].decode('utf-8'))
         output = open(bin, 'wb')
         pickle.dump(data, output)
         output.close()
@@ -50,8 +55,11 @@ class DrushAPI():
                 args = pickle.load(cache_bin)
                 cache_bin.close()
                 return args
-        args = subprocess.Popen([self.get_drush_path(), '--root=%s' % self.get_drupal_root(
-        ), '--pipe', command], stdout=subprocess.PIPE).communicate()[0].decode('utf-8').splitlines()
+        args = subprocess.Popen([self.get_drush_path(),
+                                '--root=%s' % self.get_drupal_root(),
+                                '--pipe', command],
+                                stdout=subprocess.PIPE
+                                ).communicate()[0].decode('utf-8').splitlines()
         output = open(bin, 'wb')
         pickle.dump(args, output)
         output.close()
@@ -67,7 +75,9 @@ class DrushAPI():
         cmd = self.build_command_list()
         cmd.append(command)
         cmd.append(args)
-        return subprocess.Popen(cmd, stdout=subprocess.PIPE).communicate()[0].decode('utf-8')
+        return subprocess.Popen(cmd,
+                                stdout=subprocess.PIPE
+                                ).communicate()[0].decode('utf-8')
 
     def set_working_dir(self, directory):
         global working_dir
@@ -104,6 +114,6 @@ class DrushAPI():
         cache_bin = hashlib.sha224(drupal_root.encode('utf-8')).hexdigest()
         sublime_cache_path = sublime.cache_path()
         bin = sublime_cache_path + "/" + "sublime-drush" + "/" + cache_bin
-        if os.path.isdir(bin) == False:
+        if os.path.isdir(bin) is False:
             os.makedirs(bin)
         return bin
