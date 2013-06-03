@@ -79,6 +79,7 @@ class DrushAPI():
         cmd = self.build_command_list()
         cmd.append(command)
         cmd.append(args)
+        cmd.append('--nocolor')
         return subprocess.Popen(cmd,
                                 stdout=subprocess.PIPE
                                 ).communicate()[0].decode('utf-8')

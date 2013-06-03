@@ -17,7 +17,7 @@ class DrushWatchdogShowCommand(sublime_plugin.WindowCommand):
             working_dir = self.view.window().folders()
             self.drush_api.set_working_dir(working_dir[0])
             watchdog = self.drush_api.run_command('watchdog-show',
-                                                  '--no-color')
+                                                  '')
             if watchdog:
                 output = window.create_output_panel("watchdog")
                 output.run_command('erase_view')
