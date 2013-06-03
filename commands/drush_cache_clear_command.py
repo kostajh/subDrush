@@ -12,6 +12,7 @@ class DrushCacheClearCommand (sublime_plugin.WindowCommand):
 
     def run(self):
         self.drush_api = DrushAPI()
+        self.drupal_root = self.drush_api.get_drupal_root()
         self.view = self.window.active_view()
         working_dir = self.view.window().folders()
         self.drush_api.set_working_dir(working_dir[0])
@@ -20,11 +21,11 @@ class DrushCacheClearCommand (sublime_plugin.WindowCommand):
             self.args, self.command_execution, sublime.MONOSPACE_FONT)
 
     def command_execution(self, idx):
-        if drupal_root == self.args[idx]:
+        if self.drupal_root == self.args[idx]:
             sublime.status_message("Clearing '%s' cache" % self.args[idx])
         else:
             sublime.status_message("Clearing '%s' cache for '%s'" % (
-                self.args[idx], self.drush_api.get_drupal_root()))
+                self.args[idx], self.drupal_root))
         thread = DrushCacheClearThread(self.window, self.args, idx)
         thread.start()
 
@@ -47,4 +48,4 @@ class DrushCacheClearThread (threading.Thread):
             sublime.status_message("Cleared '%s' cache" % self.args[self.idx])
         else:
             sublime.status_message("Cleared '%s' cache for '%s'" % (
-                self.args[self.idx], drush_api.get_drupal_root()))
+                self.args[self.idx], drupal_root))
