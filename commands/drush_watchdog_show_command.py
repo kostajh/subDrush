@@ -10,23 +10,16 @@ class DrushWatchdogShowCommand(sublime_plugin.WindowCommand):
     A command to display Drupal's watchdog log.
     """
     def run(self):
-        self.panel_name = 'watchdog'
-        self.window.create_output_panel(self.panel_name)
-        self.panel = self.window.get_output_panel('watchdog')
         self.view = self.window.active_view()
-        # self.window.run_command("show_panel", {"panel": "output.%s" %
-        # self.panel_name})
-        test = 'hello'
-        self.panel.run_command('drush_watchdog_show_output', {
-                               "panel": "output.%s" % test})
-
-    def on_done(self):
-        print('done')
-
-
-class DrushWatchdogShowOutputCommand(sublime_plugin.TextCommand):
-
-    def run(self, edit, output):
-        print('test')
-        self.view.insert(edit, self.view.size(), output)
-        print('running')
+        window = self.view.window()
+        if window:
+            self.drush_api = DrushAPI()
+            working_dir = self.view.window().folders()
+            self.drush_api.set_working_dir(working_dir[0])
+            watchdog = self.drush_api.run_command('watchdog-show',
+                                                  '--no-color')
+            if watchdog:
+                output = window.create_output_panel("watchdog")
+                output.run_command('erase_view')
+                output.run_command('insert_view', {'string': watchdog})
+                window.run_command("show_panel", {"panel": "output.watchdog"})

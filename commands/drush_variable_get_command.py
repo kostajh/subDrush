@@ -1,7 +1,6 @@
 import threading
 import json
 from ..lib.drush import DrushAPI
-import pprint
 
 import sublime
 import sublime_plugin
