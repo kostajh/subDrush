@@ -1,3 +1,9 @@
+import threading
+from ..lib.drush import DrushAPI
+
+import sublime
+import sublime_plugin
+
 class DrushVariableGetCommand (sublime_plugin.WindowCommand):
     quick_panel_command_selected_index = None
 

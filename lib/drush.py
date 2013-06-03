@@ -1,3 +1,19 @@
+import os
+import pickle
+import hashlib
+import fnmatch
+import subprocess
+import json
+import time
+import shutil
+
+import sublime
+import sublime_plugin
+
+drupal_root = ""
+working_dir = ""
+drush_api = ""
+
 class DrushAPI():
 
     def get_drush_path(self):

@@ -1,16 +1,8 @@
 import sublime
 import sublime_plugin
-import subprocess
-import json
-import os
-import fnmatch
-import hashlib
-import pickle
-import time
-import shutil
-import threading
+
 from .commands import *
-from .lib import drush
+from .lib.drush import DrushAPI
 
 class SublimeDrush(sublime_plugin.EventListener):
 

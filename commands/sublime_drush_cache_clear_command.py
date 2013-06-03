@@ -1,3 +1,10 @@
+import threading
+import os
+import shutil
+
+import sublime
+import sublime_plugin
+
 class SublimeDrushCacheClearCommand (sublime_plugin.WindowCommand):
     """
     A command that clears this plugin's cache.

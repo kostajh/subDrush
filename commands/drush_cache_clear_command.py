@@ -1,3 +1,9 @@
+import threading
+from ..lib.drush import DrushAPI
+
+import sublime
+import sublime_plugin
+
 class DrushCacheClearCommand (sublime_plugin.WindowCommand):
     """
     A command to clear a specific cache bin.

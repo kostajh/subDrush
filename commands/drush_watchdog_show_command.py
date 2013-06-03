@@ -1,3 +1,9 @@
+import threading
+from ..lib.drush import DrushAPI
+
+import sublime
+import sublime_plugin
+
 class DrushWatchdogShowCommand (sublime_plugin.WindowCommand):
 
     def run(self):

@@ -1,3 +1,9 @@
+import threading
+from ..lib.drush import DrushAPI
+
+import sublime
+import sublime_plugin
+
 class DrushCacheClearAllCommand (sublime_plugin.WindowCommand):
     """
     A command that clears all caches.
