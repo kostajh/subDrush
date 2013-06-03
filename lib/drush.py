@@ -5,10 +5,8 @@ import fnmatch
 import subprocess
 import json
 import time
-import shutil
 
 import sublime
-import sublime_plugin
 
 drupal_root = ""
 working_dir = ""

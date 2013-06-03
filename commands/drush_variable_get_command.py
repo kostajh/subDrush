@@ -1,4 +1,5 @@
 import threading
+import json
 from ..lib.drush import DrushAPI
 
 import sublime
@@ -11,13 +12,11 @@ class DrushVariableGetCommand (sublime_plugin.WindowCommand):
     quick_panel_command_selected_index = None
 
     def run(self):
-        global args
-        global drush
-        drush_api = DrushAPI()
+        self.drush_api = DrushAPI()
         self.view = self.window.active_view()
         working_dir = self.view.window().folders()
-        drush_api.set_working_dir(working_dir[0])
-        variable_data = json.loads(drush_api.run_command(
+        self.drush_api.set_working_dir(working_dir[0])
+        variable_data = json.loads(self.drush_api.run_command(
             'variable-get', '--format=json'))
         variables = []
         for key, value in variable_data.items():
@@ -28,6 +27,4 @@ class DrushVariableGetCommand (sublime_plugin.WindowCommand):
             variables, self.command_execution, sublime.MONOSPACE_FONT)
 
     def command_execution(self, idx):
-        global args
-        global drush_api
-        drush_api.run_command('variable-get', self.args[idx][0])
+        self.drush_api.run_command('variable-get', self.args[idx][0])
