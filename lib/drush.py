@@ -82,7 +82,8 @@ class DrushAPI():
         cmd.append('--nocolor')
         return subprocess.Popen(cmd,
                                 stdout=subprocess.PIPE
-                                ).communicate()[0].decode('utf-8')
+                                ).communicate()[0].decode('utf-8'
+                                ).replace('\r\n', '\n')
 
     def set_working_dir(self, directory):
         self.working_dir = directory
