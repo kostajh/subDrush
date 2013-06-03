@@ -8,14 +8,12 @@ import time
 
 import sublime
 
-working_dir = ""
-drush_api = ""
-
 
 class DrushAPI():
 
     def __init__(self):
         self.drupal_root = ""
+        self.working_dir = ""
 
     def get_drush_path(self):
         """
