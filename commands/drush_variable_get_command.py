@@ -1,4 +1,3 @@
-import threading
 import json
 from ..lib.drush import DrushAPI
 

@@ -105,7 +105,6 @@ class DrushAPI():
         to `directory`, or False if an alias could not be found.
         Alias name will look like `@example.local`
         """
-        alias_id = ""
         drush_aliases = self.run_command('site-alias',
                                          '-r --local --full --format=json')
         if not drush_aliases:

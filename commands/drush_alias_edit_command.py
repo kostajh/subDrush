@@ -1,5 +1,4 @@
 from ..lib.drush import DrushAPI
-import json
 from os.path import expanduser
 
 import sublime
