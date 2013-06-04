@@ -22,10 +22,4 @@ Clone this repository into `~/Library/Application Support/Sublime Text 3/Package
 - `watchdog-show` (Displays the 10 most recent watchdog entries)
 - `variable-get` (Displays the value associated with a Drupal variable)
 
-#### Planned
-
-- `cron`
-- `test-run`
-- `pm-enable` and `pm-disable`
-- `reinstall` (`pm-disable && pm-uninstall && pm-enable`)
-- `php-script` and `eval`
+See the [issue queue](https://github.com/kostajh/subDrush/issues) for commands that are in progress.
