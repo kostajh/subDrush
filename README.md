@@ -3,7 +3,7 @@ subDrush (Sublime Drush plugin)
 
 subDrush is plugin for Sublime Text 3 (ST3) that exposes a subset of [Drush](https://drupal.org/project/drush) functionality.
 
-This is not an attempt to bring the entirety of Drush into Sublime Text, which doesn't work very well on a practical level. Instead the idea is that there are some commands that can be executed easily from within ST, such as clearing caches, getting values of variables, enabling or disabling modules and themes, etc. Such commands typically don't require numerous options, don't produce much output for review, and do not require additional user input to run. These kinds of commands will be added to subDrush - for other Drush commands, use your terminal.
+This is not an attempt to bring the entirety of Drush into Sublime Text, which doesn't work very well on a practical level. Instead the idea is that there are some commands that can be executed easily from within ST, such as clearing caches, getting values of variables, enabling or disabling modules and themes, etc. Such commands typically don't require numerous options, don't produce much output for review, and usually do not require additional user input to run. These kinds of commands will be added to subDrush - for other Drush commands, use your terminal.
 
 ### Requirements
 
