@@ -13,10 +13,10 @@ class DrushCacheClearCommand(sublime_plugin.WindowCommand):
 
     def run(self):
         self.drush_api = DrushAPI()
-        self.drupal_root = self.drush_api.get_drupal_root()
         self.view = self.window.active_view()
         working_dir = self.view.window().folders()
         self.drush_api.set_working_dir(working_dir[0])
+        self.drupal_root = self.drush_api.get_drupal_root()
         self.args = self.drush_api.load_command_args('cache-clear')
         self.window.show_quick_panel(
             self.args, self.command_execution, sublime.MONOSPACE_FONT)
@@ -27,7 +27,7 @@ class DrushCacheClearCommand(sublime_plugin.WindowCommand):
         else:
             sublime.status_message("Clearing '%s' cache for '%s'" % (
                 self.args[idx], self.drupal_root))
-        thread = DrushCacheClearThread(self.window, self.args, idx)
+        thread = DrushCacheClearThread(self.window, self.args, idx, self.drush_api, self.drupal_root)
         thread.start()
 
 
@@ -35,18 +35,19 @@ class DrushCacheClearThread(threading.Thread):
     """
     A thread to clear a specific cache bin.
     """
-    def __init__(self, window, args, idx):
+    def __init__(self, window, args, idx, drush_api, drupal_root):
         self.window = window
         self.args = args
         self.idx = idx
+        self.drush_api = drush_api
+        self.drupal_root = drupal_root
         threading.Thread.__init__(self)
 
     def run(self):
-        drush_api = DrushAPI()
-        drush_api.run_command('cache-clear', self.args[self.idx])
-        drupal_root = drush_api.get_drupal_root()
-        if drupal_root == self.args[self.idx]:
+        self.drush_api.run_command('cache-clear', self.args[self.idx])
+        print(self.drupal_root)
+        if self.drupal_root == self.args[self.idx]:
             sublime.status_message("Cleared '%s' cache" % self.args[self.idx])
         else:
             sublime.status_message("Cleared '%s' cache for '%s'" % (
-                self.args[self.idx], drupal_root))
+                self.args[self.idx], self.drupal_root))
