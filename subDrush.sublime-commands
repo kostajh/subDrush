@@ -18,5 +18,9 @@
     {
       "caption": "Drush: Watchdog Show",
       "command": "drush_watchdog_show",
+    },
+    {
+      "caption": "Drush: Cron",
+      "command": "drush_cron",
     }
 ]
