@@ -78,12 +78,44 @@ class DrushAPI():
     def run_command(self, command, args):
         cmd = self.build_command_list()
         cmd.append(command)
-        cmd.append(args)
-        cmd.append('--nocolor')
-        return subprocess.Popen(cmd,
-                                stdout=subprocess.PIPE
-                                ).communicate()[0].decode('utf-8'
-                                ).replace('\r\n', '\n')
+        args = args.split(' ')
+        for arg in args:
+            cmd.append(arg)
+        response = subprocess.Popen(cmd,
+                                    stdout=subprocess.PIPE
+                                    ).communicate()[0].decode('utf-8')
+        return response.replace('\r\n', '\n')
+
+    def get_local_site_aliases(self):
+        """
+        Returns a list of local site aliases.
+        """
+        aliases = self.run_command('site-alias', '--local --format=json')
+        if not aliases:
+            return False
+        aliases = json.loads(aliases)
+        local_aliases = list()
+        for alias, values in aliases.items():
+            local_aliases.append(values[u'#id'].rsplit('.', 1)[0])
+        return local_aliases
+
+    def get_site_alias_from_drupal_root(self, directory):
+        """
+        Returns a string of the alias name that corresponds
+        to `directory`, or False if an alias could not be found.
+        Alias name will look like `@example.local`
+        """
+        alias_id = ""
+        drush_aliases = self.run_command('site-alias',
+                                         '-r --local --full --format=json')
+        if not drush_aliases:
+            return False
+        drush_aliases = json.loads(drush_aliases)
+        for alias, values in drush_aliases.items():
+            if 'root' in values and directory == values[u'root'].replace(
+                    '\/', '/'):
+                return values['#id'].replace('@', '').rsplit('.', 1)[0]
+        return False
 
     def set_working_dir(self, directory):
         self.working_dir = directory

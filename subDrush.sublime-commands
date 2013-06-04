@@ -20,6 +20,10 @@
       "command": "drush_watchdog_show",
     },
     {
+      "caption": "Sublime Drush: Alias Edit",
+      "command": "drush_alias_edit",
+    },
+    {
       "caption": "Drush: Cron",
       "command": "drush_cron",
     }
