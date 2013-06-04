@@ -76,11 +76,17 @@ class DrushAPI():
         return command
 
     def run_command(self, command, args):
+        """
+        Run a Drush command. `args` is both arguments and options that follow
+        the Drush command.
+        """
         cmd = self.build_command_list()
         cmd.append(command)
         args = args.split(' ')
         for arg in args:
-            cmd.append(arg)
+            if arg is not '':
+                cmd.append(arg)
+        cmd.append('--nocolor')
         response = subprocess.Popen(cmd,
                                     stdout=subprocess.PIPE
                                     ).communicate()[0].decode('utf-8')
