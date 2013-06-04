@@ -21,5 +21,7 @@ Clone this repository into `~/Library/Application Support/Sublime Text 3/Package
 - `cache-clear all`
 - `watchdog-show` (Displays the 10 most recent watchdog entries)
 - `variable-get` (Displays the value associated with a Drupal variable)
+- `cron` (Invokes cron for open Drupal directory)
+- `alias-edit` (Edit the Drush alias associated with the open Drupal directory, or choose from a list of all available local Drush aliases)
 
 See the [issue queue](https://github.com/kostajh/subDrush/issues) for commands that are in progress.
