@@ -44,4 +44,11 @@ class DrushEvalThread(threading.Thread):
         args = list()
         args.append(self.code)
         result = drush_api.run_command('php-eval', args, list())
-        print(result)
+        if result:
+            output = self.window.create_output_panel("eval")
+            output.run_command('erase_view')
+            output.run_command('append', {'characters': result})
+            self.window.run_command("show_panel", {"panel": "output.eval"})
+        else:
+            sublime.status_message('There was an error in running the selection through eval.')
+
