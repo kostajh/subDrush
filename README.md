@@ -23,11 +23,18 @@ Feel free to create your own [key bindings](http://docs.sublimetext.info/en/late
 
 ### Supported Commands
 
+#### Drush
+
 - `cache-clear` (Select a specific cache bin)
 - `cache-clear all`
 - `watchdog-show` (Displays the 10 most recent watchdog entries)
 - `variable-get` (Displays the value associated with a Drupal variable)
 - `cron` (Invokes cron for open Drupal directory)
+- `php-eval` (Evaluates selected text in the bootstrapped Drupal site)
+
+#### Custom
+
 - `alias-edit` (Edit the Drush alias associated with the open Drupal directory, or choose from a list of all available local Drush aliases)
+- `Clear Sublime Drush cache` (Clears Sublime Drush internal cache)
 
 See the [issue queue](https://github.com/kostajh/subDrush/issues) for commands that are in progress.
