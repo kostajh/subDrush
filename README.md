@@ -31,6 +31,7 @@ Feel free to create your own [key bindings](http://docs.sublimetext.info/en/late
 | `variable-get`              | Displays the value of a Drupal variable                   | core   |
 | `cron`                      | Invokes cron for open Drupal directory                    | core   |
 | `php-eval`                  | Evaluates selected text in the bootstrapped Drupal site   | core   |
+| `php-script`                | Executes open buffer as PHP script after Drupal bootstrap | core   |
 | `alias-edit`                | Edit the Drush aliases (current site or choose from list) | custom |
 | `Clear Sublime Drush cache` | Clears Sublime Drush internal cache                       | custom |
 

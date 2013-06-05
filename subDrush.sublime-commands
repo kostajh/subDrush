@@ -8,6 +8,10 @@
       "command": "drush_eval"
     },
     {
+      "caption": "Drush: PHP-Script (Runs the active buffer as a php script after a full Drupal bootstrap)",
+      "command": "drush_php_script"
+    },
+    {
       "caption": "Drush: Cache Clear All (Clear all caches)",
       "command": "drush_cache_clear_all"
     },

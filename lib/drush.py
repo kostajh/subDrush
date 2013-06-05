@@ -88,10 +88,9 @@ class DrushAPI():
             for opt in options:
                 cmd.append(opt)
         cmd.append('--nocolor')
-        response = subprocess.Popen(cmd,
-                                    stdout=subprocess.PIPE
-                                    ).communicate()[0].decode('utf-8')
-        return response.replace('\r\n', '\n')
+        response = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+        decoded = response.communicate()[0].decode('utf-8')
+        return decoded.replace('\r\n', '\n')
 
     def get_local_site_aliases(self):
         """
