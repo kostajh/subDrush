@@ -17,7 +17,10 @@ class DrushVariableGetCommand (sublime_plugin.WindowCommand):
         self.view = self.window.active_view()
         working_dir = self.view.window().folders()
         self.drush_api.set_working_dir(working_dir[0])
-        variables = self.drush_api.run_command('variable-get', '--format=json')
+        args = list()
+        options = list()
+        options.append('--format=json')
+        variables = self.drush_api.run_command('variable-get', args, options)
         if not variables:
             sublime.status_message('No variables were found. Make sure you'
                                    ' are working in a Drupal directory.')
@@ -36,8 +39,10 @@ class DrushVariableGetCommand (sublime_plugin.WindowCommand):
             variables, self.command_execution, sublime.MONOSPACE_FONT)
 
     def command_execution(self, idx):
+        args = list()
+        args.append(self.args[idx][0])
         variable = self.drush_api.run_command('variable-get',
-                                              self.args[idx][0])
+                                              args, list())
         window = self.view.window()
         if window:
             output = window.create_output_panel("variable_get")

@@ -13,6 +13,7 @@ class DrushAliasEditCommand(sublime_plugin.WindowCommand):
     quick_panel_command_selected_index = None
 
     def run(self):
+        sublime.status_message('Loading Drush aliases...')
         self.drush_api = DrushAPI()
         self.view = self.window.active_view()
         working_dir = self.view.window().folders()

@@ -75,17 +75,18 @@ class DrushAPI():
         command.append('--root=%s' % self.get_drupal_root())
         return command
 
-    def run_command(self, command, args):
+    def run_command(self, command, args, options):
         """
-        Run a Drush command. `args` is both arguments and options that follow
-        the Drush command.
+        Run a Drush command. args and options must both be lists.
         """
         cmd = self.build_command_list()
         cmd.append(command)
-        args = args.split(' ')
-        for arg in args:
-            if arg is not '':
+        if args:
+            for arg in args:
                 cmd.append(arg)
+        if options:
+            for opt in options:
+                cmd.append(opt)
         cmd.append('--nocolor')
         response = subprocess.Popen(cmd,
                                     stdout=subprocess.PIPE
@@ -96,7 +97,10 @@ class DrushAPI():
         """
         Returns a list of local site aliases.
         """
-        aliases = self.run_command('site-alias', '--local --format=json')
+        options = list()
+        options.append('--local')
+        options.append('--format=json')
+        aliases = self.run_command('site-alias', list(), options)
         if not aliases:
             return False
         aliases = json.loads(aliases)
@@ -111,8 +115,13 @@ class DrushAPI():
         to `directory`, or False if an alias could not be found.
         Alias name will look like `@example.local`
         """
-        drush_aliases = self.run_command('site-alias',
-                                         '-r --local --full --format=json')
+        options = list()
+        options.append('-r')
+        options.append('--local')
+        options.append('--full')
+        options.append('--format=json')
+        drush_aliases = self.run_command('site-alias', list(), options)
+
         if not drush_aliases:
             return False
         drush_aliases = json.loads(drush_aliases)

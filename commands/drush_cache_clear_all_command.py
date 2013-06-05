@@ -29,5 +29,7 @@ class DrushCacheClearAllThread(threading.Thread):
         working_dir = self.view.window().folders()
         drush_api.set_working_dir(working_dir[0])
         drupal_root = drush_api.get_drupal_root()
-        drush_api.run_command('cache-clear', 'all')
+        args = list()
+        args.append('all')
+        drush_api.run_command('cache-clear', args, list())
         sublime.status_message("Cleared all caches for '%s'" % drupal_root)
