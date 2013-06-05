@@ -27,7 +27,11 @@ class DrushCacheClearCommand(sublime_plugin.WindowCommand):
         else:
             sublime.status_message("Clearing '%s' cache for '%s'" % (
                 self.args[idx], self.drupal_root))
-        thread = DrushCacheClearThread(self.window, self.args, idx, self.drush_api, self.drupal_root)
+        thread = DrushCacheClearThread(self.window,
+                                       self.args,
+                                       idx,
+                                       self.drush_api,
+                                       self.drupal_root)
         thread.start()
 
 

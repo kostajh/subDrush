@@ -36,5 +36,5 @@ class DrushWatchdogShowThread(threading.Thread):
         if watchdog:
             output = self.window.create_output_panel("watchdog")
             output.run_command('erase_view')
-            output.run_command('insert_view', {'string': watchdog})
+            output.run_command('append', {'characters': watchdog})
             self.window.run_command("show_panel", {"panel": "output.watchdog"})

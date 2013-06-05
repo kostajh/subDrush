@@ -42,5 +42,5 @@ class DrushVariableGetCommand (sublime_plugin.WindowCommand):
         if window:
             output = window.create_output_panel("variable_get")
             output.run_command('erase_view')
-            output.run_command('insert_view', {'string': variable})
+            output.run_command('append', {'characters': variable})
             window.run_command("show_panel", {"panel": "output.variable_get"})
