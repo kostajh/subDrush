@@ -17,6 +17,18 @@ Clone this repository into `~/Library/Application Support/Sublime Text 3/Package
 
 ### Usage
 
+This plugin works best when you have a Drupal directory open in ST3, or a directory immediately below your Drupal root. This allows subDrush to know about the local Drupal environment, and lets you interact with the local Drupal site's database.
+
+For example, suppose your site directory structure looks like this:
+
+    /path/to/repo/docroot   <-- Where Drupal core is
+    /path/to/repo/resources <-- Miscellaneous scripts
+    /path/to/repo/tests     <-- Any tests you've written, etc
+
+In Sublime Text 3, if you go to File -> Open and open up `/path/to/repo` or `/path/to/repo/docroot` this plugin will work fine, and will be able to accurately identify the Drupal root to pass to Drush.
+
+However, if you start ST3 and go to File -> Open and select `/path/to/repo/docroot/modules/color/color.module`, subDrush will not be able to identify Drupal root - this should be fixed in future releases.
+
 Open up the command palette (Ctrl + Shift + P), type `drush` to see the commands.
 
 Feel free to create your own [key bindings](http://docs.sublimetext.info/en/latest/reference/key_bindings.html) as none are provided by this plugin.
