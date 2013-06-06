@@ -18,7 +18,8 @@ class DrushPhpScriptCommand (sublime_plugin.WindowCommand):
             thread = DrushPhpScriptThread(self.window)
             thread.start()
         else:
-            sublime.status_message('Make sure the syntax for your files is set to PHP or HTML.')
+            sublime.status_message('Make sure the syntax for your files is set'
+                                   ' to PHP or HTML.')
 
 
 class DrushPhpScriptThread(threading.Thread):
@@ -39,10 +40,10 @@ class DrushPhpScriptThread(threading.Thread):
         args.append(file_name)
         result = drush_api.run_command('php-script', args, list())
         if not result:
-            sublime.status_message('An error occurred when attempting to execute this script.')
+            sublime.status_message('An error occurred when attempting to '
+                                   'execute this script.')
             return
         output = self.window.create_output_panel("script")
         output.run_command('erase_view')
         output.run_command('append', {'characters': result})
         self.window.run_command("show_panel", {"panel": "output.script"})
-

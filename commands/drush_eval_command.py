@@ -4,6 +4,7 @@ import threading
 import sublime
 import sublime_plugin
 
+
 class DrushEvalCommand (sublime_plugin.WindowCommand):
     """
     A command to evaluate arbitrary php code after bootstrapping Drupal
@@ -22,10 +23,13 @@ class DrushEvalCommand (sublime_plugin.WindowCommand):
                 thread = DrushEvalThread(self.window, code)
                 thread.start()
             else:
-                sublime.status_message('You have no text selected. Please select' \
-                    ' the string you want to evaluate, then try again.')
+                sublime.status_message('You have no text selected. Please '
+                                       'select the string you want to evaluate'
+                                       ', then try again.')
         else:
-            sublime.status_message('Make sure the syntax for your buffer is set to PHP or HTML.')
+            sublime.status_message('Make sure the syntax for your buffer is '
+                                   'set to PHP or HTML.')
+
 
 class DrushEvalThread(threading.Thread):
     """
@@ -50,5 +54,5 @@ class DrushEvalThread(threading.Thread):
             output.run_command('append', {'characters': result})
             self.window.run_command("show_panel", {"panel": "output.eval"})
         else:
-            sublime.status_message('There was an error in running the selection through eval.')
-
+            sublime.status_message('There was an error in running the '
+                                   'selection through eval.')
