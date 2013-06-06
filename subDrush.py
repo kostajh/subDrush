@@ -6,6 +6,6 @@ from .lib.drush import DrushAPI
 
 class SublimeDrush(sublime_plugin.EventListener):
 
-    def on_load_async(self, view):
+    def on_load_async(self):
         drush_api = DrushAPI()
         drush_api.load_command_args('core-status')

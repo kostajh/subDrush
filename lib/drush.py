@@ -50,6 +50,10 @@ class DrushAPI():
         return commands
 
     def load_command_args(self, command):
+        """
+        Loads valid arguments for a command. This is useful for identifying,
+        for example, which cache bins to display in a given environment.
+        """
         bin = self.get_cache_bin(
             self.get_drupal_root() + "/" + command) + "/" + command
         if os.path.isfile(bin):
@@ -70,6 +74,10 @@ class DrushAPI():
         return args
 
     def build_command_list(self):
+        """
+        Build the command list to pass to subprocess. We are adding the path
+        to drush, then the path to the Drupal root.
+        """
         command = []
         command.append(self.get_drush_path())
         command.append('--root=%s' % self.get_drupal_root())
@@ -131,9 +139,15 @@ class DrushAPI():
         return False
 
     def set_working_dir(self, directory):
+        """
+        Sets the working directory.
+        """
         self.working_dir = directory
 
     def get_drupal_root(self):
+        """
+        Returns the path to Drupal root, based on looking at self.working_dir
+        """
         if self.drupal_root:
             return self.drupal_root
         if not self.working_dir:
@@ -162,6 +176,10 @@ class DrushAPI():
         return self.working_dir
 
     def get_cache_bin(self, drupal_root):
+        """
+        Returns a cache bin for a Drupal root. If the bin doesn't exist, it is
+        created.
+        """
         cache_bin = hashlib.sha224(drupal_root.encode('utf-8')).hexdigest()
         sublime_cache_path = sublime.cache_path()
         bin = sublime_cache_path + "/" + "sublime-drush" + "/" + cache_bin
