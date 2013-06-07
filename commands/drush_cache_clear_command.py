@@ -51,7 +51,6 @@ class DrushCacheClearThread(threading.Thread):
         args = list()
         args.append(self.args[self.idx])
         self.drush_api.run_command('cache-clear', args, list())
-        print(self.drupal_root)
         if self.drupal_root == self.args[self.idx]:
             sublime.status_message("Cleared '%s' cache" % self.args[self.idx])
         else:
