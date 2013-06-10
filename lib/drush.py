@@ -5,6 +5,7 @@ import fnmatch
 import subprocess
 import json
 import time
+import shutil
 
 import sublime
 
@@ -19,9 +20,7 @@ class DrushAPI():
         """
         Get the path to the Drush executable.
         """
-        return subprocess.Popen(['which', 'drush'],
-                                stdout=subprocess.PIPE
-                                ).communicate()[0].decode('utf-8').rstrip()
+        return shutil.which('drush')
 
     def load_command_info(self, command):
         """
