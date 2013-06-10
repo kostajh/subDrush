@@ -44,6 +44,7 @@ class DrushPhpScriptThread(threading.Thread):
                                    'execute this script.')
             return
         output = self.window.create_output_panel("script")
+        output.set_syntax_file("Packages/Text/Plain Text.tmLanguage")
         output.run_command('erase_view')
         output.run_command('append', {'characters': result})
         self.window.run_command("show_panel", {"panel": "output.script"})

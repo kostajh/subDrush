@@ -50,6 +50,7 @@ class DrushEvalThread(threading.Thread):
         result = drush_api.run_command('php-eval', args, list())
         if result:
             output = self.window.create_output_panel("eval")
+            output.set_syntax_file("Packages/Text/Plain Text.tmLanguage")
             output.run_command('erase_view')
             output.run_command('append', {'characters': result})
             self.window.run_command("show_panel", {"panel": "output.eval"})

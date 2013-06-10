@@ -68,6 +68,7 @@ class DrushVariableGetThread(threading.Thread):
         window = self.view.window()
         if window:
             output = window.create_output_panel("variable_get")
+            output.set_syntax_file("Packages/Text/Plain Text.tmLanguage")
             output.run_command('erase_view')
             output.run_command('append', {'characters': variable})
             window.run_command("show_panel", {"panel": "output.variable_get"})

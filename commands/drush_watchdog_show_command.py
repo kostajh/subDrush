@@ -35,6 +35,7 @@ class DrushWatchdogShowThread(threading.Thread):
         sublime.status_message('Loaded 10 most recent watchdog entries')
         if watchdog:
             output = self.window.create_output_panel("watchdog")
+            output.set_syntax_file("Packages/Text/Plain Text.tmLanguage")
             output.run_command('erase_view')
             output.run_command('append', {'characters': watchdog})
             self.window.run_command("show_panel", {"panel": "output.watchdog"})
