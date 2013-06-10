@@ -8,8 +8,8 @@ This is not an attempt to bring the entirety of Drush into Sublime Text, which d
 ### Requirements
 
 - [Drush 6](https://drupal.org/project/drush). Drush 5 may work but this plugin is developed against Drush 6.
-- Sublime Text 3
-- Only Mac OS 10.8 has been tested so far. Linux should be okay, not sure about Windows.
+- Sublime Text 3 (Build 3033 or later)
+- Only Mac OS 10.8 has been tested so far. Linux and Windows should work fine though.
 
 ### Installation
 
