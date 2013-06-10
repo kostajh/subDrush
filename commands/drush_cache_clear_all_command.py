@@ -2,7 +2,6 @@ import threading
 from ..lib.drush import DrushAPI
 from ..lib.thread_progress import ThreadProgress
 
-import sublime
 import sublime_plugin
 
 

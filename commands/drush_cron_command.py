@@ -21,25 +21,21 @@ class DrushCronCommand(sublime_plugin.WindowCommand):
             sublime.status_message('Could not invoke cron as you are not '
                                    'working in a Drupal directory')
             return
-        thread = DrushCronThread(self.window)
+        thread = DrushCronThread(self.window, self.drush_api)
         thread.start()
         ThreadProgress(thread,
                        'Invoking cron for %s' % self.drupal_root,
-                       "Cron was invokved for '%s'" % drupal_root)
+                       "Cron was successfully run on '%s'" % self.drupal_root)
 
 
 class DrushCronThread(threading.Thread):
     """
     A thread to clear all caches
     """
-    def __init__(self, window):
+    def __init__(self, window, drush_api):
         self.window = window
+        self.drush_api = drush_api
         threading.Thread.__init__(self)
 
     def run(self):
-        drush_api = DrushAPI()
-        self.view = self.window.active_view()
-        working_dir = self.view.window().folders()
-        drush_api.set_working_dir(working_dir[0])
-        drupal_root = drush_api.get_drupal_root()
-        drush_api.run_command('cron', list(), list())
+        self.drush_api.run_command('cron', list(), list())
