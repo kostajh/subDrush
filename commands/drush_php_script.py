@@ -1,5 +1,6 @@
 import threading
 from ..lib.drush import DrushAPI
+from ..lib.thread_progress import ThreadProgress
 
 import sublime
 import sublime_plugin
@@ -14,9 +15,11 @@ class DrushPhpScriptCommand (sublime_plugin.WindowCommand):
         self.view = self.window.active_view()
         syntax = self.view.settings().get('syntax')
         if 'HTML' in syntax or 'PHP' in syntax:
-            sublime.status_message('Executing Drush script...')
             thread = DrushPhpScriptThread(self.window)
             thread.start()
+            ThreadProgress(thread,
+                           'Executing Drush script',
+                           'Done executing Drush script')
         else:
             sublime.status_message('Make sure the syntax for your files is set'
                                    ' to PHP or HTML.')

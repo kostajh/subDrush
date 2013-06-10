@@ -1,4 +1,5 @@
 from ..lib.drush import DrushAPI
+from ..lib.thread_progress import ThreadProgress
 import threading
 
 import sublime
@@ -19,9 +20,11 @@ class DrushEvalCommand (sublime_plugin.WindowCommand):
             for selection in selections:
                 code = self.view.substr(selection)
             if code:
-                sublime.status_message('Evaluating "%s"' % code)
                 thread = DrushEvalThread(self.window, code)
                 thread.start()
+                ThreadProgress(thread,
+                               'Evaluating "%s"' % code,
+                               'Finished evaluating code.')
             else:
                 sublime.status_message('You have no text selected. Please '
                                        'select the string you want to evaluate'

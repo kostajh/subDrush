@@ -1,5 +1,6 @@
 import threading
 from ..lib.drush import DrushAPI
+from ..lib.thread_progress import ThreadProgress
 
 import sublime
 import sublime_plugin
@@ -10,9 +11,11 @@ class DrushWatchdogShowCommand(sublime_plugin.WindowCommand):
     A command to display Drupal's watchdog log.
     """
     def run(self):
-        sublime.status_message('Loading watchdog entries...')
         thread = DrushWatchdogShowThread(self.window)
         thread.start()
+        ThreadProgress(thread,
+                       'Loading watchdog entries',
+                       'Loaded watchdog entries')
 
 
 class DrushWatchdogShowThread(threading.Thread):

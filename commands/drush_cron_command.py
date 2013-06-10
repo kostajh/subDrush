@@ -1,5 +1,6 @@
 import threading
 from ..lib.drush import DrushAPI
+from ..lib.thread_progress import ThreadProgress
 
 import sublime
 import sublime_plugin
@@ -20,9 +21,11 @@ class DrushCronCommand(sublime_plugin.WindowCommand):
             sublime.status_message('Could not invoke cron as you are not '
                                    'working in a Drupal directory')
             return
-        sublime.status_message('Invoking cron for %s' % self.drupal_root)
         thread = DrushCronThread(self.window)
         thread.start()
+        ThreadProgress(thread,
+                       'Invoking cron for %s' % self.drupal_root,
+                       "Cron was invokved for '%s'" % drupal_root)
 
 
 class DrushCronThread(threading.Thread):
@@ -40,4 +43,3 @@ class DrushCronThread(threading.Thread):
         drush_api.set_working_dir(working_dir[0])
         drupal_root = drush_api.get_drupal_root()
         drush_api.run_command('cron', list(), list())
-        sublime.status_message("Cron was invokved for '%s'" % drupal_root)

@@ -1,6 +1,7 @@
 import json
 import threading
 from ..lib.drush import DrushAPI
+from ..lib.thread_progress import ThreadProgress
 
 import sublime
 import sublime_plugin
@@ -13,7 +14,6 @@ class DrushVariableGetCommand(sublime_plugin.WindowCommand):
     quick_panel_command_selected_index = None
 
     def run(self):
-        sublime.status_message('Loading variables')
         self.drush_api = DrushAPI()
         self.view = self.window.active_view()
         working_dir = self.view.window().folders()
@@ -23,6 +23,10 @@ class DrushVariableGetCommand(sublime_plugin.WindowCommand):
                                            self.drush_api,
                                            self.drupal_root)
         thread.start()
+        ThreadProgress(thread,
+                       'Loading defined variables',
+                       'Loaded variables. Select one to display its'
+                       ' value in the output panel.')
 
 
 class DrushVariableGetAllThread(threading.Thread):
@@ -44,8 +48,6 @@ class DrushVariableGetAllThread(threading.Thread):
             sublime.status_message('No variables were found. Make sure you'
                                    ' are working in a Drupal directory.')
             return
-        sublime.status_message('Loaded variables. Select one to display its'
-                               ' value in the output panel.')
         variable_data = json.loads(variables)
         self.variables = []
         for key, value in variable_data.items():
@@ -59,14 +61,15 @@ class DrushVariableGetAllThread(threading.Thread):
                                      sublime.MONOSPACE_FONT)
 
     def command_execution(self, idx):
-        args = list()
-        args.append(self.variables[idx][0])
         thread = DrushVariableGetThread(self.window,
                                         self.variables,
                                         idx,
                                         self.drush_api,
                                         self.drupal_root)
         thread.start()
+        ThreadProgress(thread,
+                       'Retrieving value of variable "%"' % idx,
+                       'Retrieved value of variable "%"' % idx)
 
 
 class DrushVariableGetThread(threading.Thread):

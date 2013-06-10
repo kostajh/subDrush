@@ -1,6 +1,7 @@
 import threading
 import os
 import shutil
+from ..lib.thread_progress import ThreadProgress
 
 import sublime
 import sublime_plugin
@@ -12,10 +13,11 @@ class SublimeDrushCacheClearCommand (sublime_plugin.WindowCommand):
     """
 
     def run(self):
-        sublime.status_message('Clearing Sublime Drush plugin cache')
         thread = SublimeDrushCacheClearThread()
         thread.start()
-        sublime.status_message('Cleared Sublime Drush plugin cache')
+        ThreadProgress(thread,
+                       'Clearing Sublime Drush plugin cache',
+                       'Cleared Sublime Drush plugin cache')
 
 
 class SublimeDrushCacheClearThread (threading.Thread):
