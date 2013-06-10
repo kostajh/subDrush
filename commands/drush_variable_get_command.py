@@ -19,6 +19,23 @@ class DrushVariableGetCommand(sublime_plugin.WindowCommand):
         working_dir = self.view.window().folders()
         self.drush_api.set_working_dir(working_dir[0])
         self.drupal_root = self.drush_api.get_drupal_root()
+        thread = DrushVariableGetAllThread(self.window,
+                                           self.drush_api,
+                                           self.drupal_root)
+        thread.start()
+
+
+class DrushVariableGetAllThread(threading.Thread):
+    """
+    A thread to return a list of all variables.
+    """
+    def __init__(self, window, drush_api, drupal_root):
+        self.window = window
+        self.drush_api = drush_api
+        self.drupal_root = drupal_root
+        threading.Thread.__init__(self)
+
+    def run(self):
         args = list()
         options = list()
         options.append('--format=json')
@@ -30,21 +47,22 @@ class DrushVariableGetCommand(sublime_plugin.WindowCommand):
         sublime.status_message('Loaded variables. Select one to display its'
                                ' value in the output panel.')
         variable_data = json.loads(variables)
-        variables = []
+        self.variables = []
         for key, value in variable_data.items():
             desc = "Array"
             if (type(value) is str) and (type(key) is str):
                 desc = value
-            variables.append([key, desc])
-        self.args = variables
-        self.window.show_quick_panel(
-            variables, self.command_execution, sublime.MONOSPACE_FONT)
+            self.variables.append([key, desc])
+
+        self.window.show_quick_panel(self.variables,
+                                     self.command_execution,
+                                     sublime.MONOSPACE_FONT)
 
     def command_execution(self, idx):
         args = list()
-        args.append(self.args[idx][0])
+        args.append(self.variables[idx][0])
         thread = DrushVariableGetThread(self.window,
-                                        self.args,
+                                        self.variables,
                                         idx,
                                         self.drush_api,
                                         self.drupal_root)
@@ -64,8 +82,10 @@ class DrushVariableGetThread(threading.Thread):
         threading.Thread.__init__(self)
 
     def run(self):
-        self.drush_api.run_command('variable-get', self.args, list())
-        window = self.view.window()
+        args = list()
+        args.append(self.args[self.idx][0])
+        variable = self.drush_api.run_command('variable-get', args, list())
+        window = self.window
         if window:
             output = window.create_output_panel("variable_get")
             output.set_syntax_file("Packages/Text/Plain Text.tmLanguage")
