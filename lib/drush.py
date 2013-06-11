@@ -95,6 +95,7 @@ class DrushAPI():
             for opt in options:
                 cmd.append(opt)
         cmd.append('--nocolor')
+        print(cmd)
         response = subprocess.Popen(cmd, stdout=subprocess.PIPE)
         decoded = response.communicate()[0].decode('utf-8')
         return decoded.replace('\r\n', '\n')
@@ -152,6 +153,19 @@ class DrushAPI():
         if not self.working_dir:
             # If the working directory hasn't been set, return "drush"
             return 'drush'
+
+        bin = self.get_cache_bin(self.working_dir) + "/drupal_root"
+        if os.path.isfile(bin):
+            bin = open(bin, 'rb')
+            last_modified = os.path.getmtime(bin.name)
+            if (time.time() - last_modified < 3600):
+                self.drupal_root = pickle.load(bin)
+                bin.close()
+                if os.path.isdir(self.drupal_root):
+                    print('Load Drupal root from cache %s' % self.drupal_root)
+                    return self.drupal_root
+
+        print('Searching for Drupal root in working dir')
         matches = []
         for root, dirnames, filenames in os.walk(self.working_dir):
             for filename in fnmatch.filter(filenames, 'system.module'):
@@ -166,7 +180,13 @@ class DrushAPI():
             del(paths[-3:-1])
             del(paths[-1])
             drupal_root = "/".join(paths)
+            # Create a cache bin for the Drupal root
             self.get_cache_bin(drupal_root)
+            # Save path to Drupal root in working dir cache
+            print('Saving path to drupal root in cache: %s' % drupal_root)
+            output = open(bin + "/drupal_root", 'wb')
+            pickle.dump(drupal_root, output)
+            output.close()
             return drupal_root
         else:
             # Default to Drush cache bin.
@@ -174,14 +194,14 @@ class DrushAPI():
             return 'drush'
         return self.working_dir
 
-    def get_cache_bin(self, drupal_root):
+    def get_cache_bin(self, bin):
         """
-        Returns a cache bin for a Drupal root. If the bin doesn't exist, it is
-        created.
+        Returns a cache bin. If the bin doesn't exist, it is created.
         """
-        cache_bin = hashlib.sha224(drupal_root.encode('utf-8')).hexdigest()
+        print('Creating cache bin for %s' % bin)
+        cache_bin_name = hashlib.sha224(bin.encode('utf-8')).hexdigest()
         sublime_cache_path = sublime.cache_path()
-        bin = sublime_cache_path + "/" + "sublime-drush" + "/" + cache_bin
-        if os.path.isdir(bin) is False:
-            os.makedirs(bin)
-        return bin
+        cache_bin = sublime_cache_path + "/" + "sublime-drush" + "/" + cache_bin_name
+        if os.path.isdir(cache_bin) is False:
+            os.makedirs(cache_bin)
+        return cache_bin

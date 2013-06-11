@@ -68,8 +68,8 @@ class DrushVariableGetAllThread(threading.Thread):
                                         self.drupal_root)
         thread.start()
         ThreadProgress(thread,
-                       'Retrieving value of variable "%"' % idx,
-                       'Retrieved value of variable "%"' % idx)
+                       'Retrieving value of variable "%s"' % idx,
+                       'Retrieved value of variable "%s"' % idx)
 
 
 class DrushVariableGetThread(threading.Thread):
