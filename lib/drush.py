@@ -158,12 +158,17 @@ class DrushAPI():
         if os.path.isfile(bin):
             bin = open(bin, 'rb')
             last_modified = os.path.getmtime(bin.name)
-            if (time.time() - last_modified < 3600):
+            # If older than 24 hours, refresh cache.
+            if (time.time() - last_modified < 86400):
                 self.drupal_root = pickle.load(bin)
                 bin.close()
                 if os.path.isdir(self.drupal_root):
                     print('Load Drupal root from cache %s' % self.drupal_root)
                     return self.drupal_root
+            else:
+                print('Cache is expired!')
+        else:
+            print('Cache bin is not a file, cannot load.')
 
         print('Searching for Drupal root in working dir')
         matches = []
@@ -181,15 +186,16 @@ class DrushAPI():
             del(paths[-1])
             drupal_root = "/".join(paths)
             # Create a cache bin for the Drupal root
-            self.get_cache_bin(drupal_root)
+            self.get_cache_bin(self.working_dir)
             # Save path to Drupal root in working dir cache
-            print('Saving path to drupal root in cache: %s' % drupal_root)
+            print('Saving drupal_root "%s" in cache' % drupal_root)
             output = open(bin, 'wb')
             pickle.dump(drupal_root, output)
             output.close()
             return drupal_root
         else:
             # Default to Drush cache bin.
+            print("Using 'drush' cache bin")
             self.get_cache_bin('drush')
             return 'drush'
         return self.working_dir
@@ -198,12 +204,13 @@ class DrushAPI():
         """
         Returns a cache bin. If the bin doesn't exist, it is created.
         """
-        print('Getting cache bin for %s' % bin)
         cache_bin_name = hashlib.sha224(bin.encode('utf-8')).hexdigest()
         sublime_cache_path = sublime.cache_path()
         cache_bin = sublime_cache_path + "/" + "sublime-drush" + "/" \
             + cache_bin_name
         if os.path.isdir(cache_bin) is False:
-            print('Created new cache bin: %s' % cache_bin)
+            print('Bin not found. Created new cache bin: %s' % cache_bin)
             os.makedirs(cache_bin)
+        else:
+            print('Returning cache bin for "%s"' % bin)
         return cache_bin
