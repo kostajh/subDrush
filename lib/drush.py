@@ -201,7 +201,8 @@ class DrushAPI():
         print('Getting cache bin for %s' % bin)
         cache_bin_name = hashlib.sha224(bin.encode('utf-8')).hexdigest()
         sublime_cache_path = sublime.cache_path()
-        cache_bin = sublime_cache_path + "/" + "sublime-drush" + "/" + cache_bin_name
+        cache_bin = sublime_cache_path + "/" + "sublime-drush" + "/" \
+            + cache_bin_name
         if os.path.isdir(cache_bin) is False:
             print('Created new cache bin: %s' % cache_bin)
             os.makedirs(cache_bin)
