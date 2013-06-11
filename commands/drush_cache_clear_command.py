@@ -57,4 +57,3 @@ class DrushCacheClearThread(threading.Thread):
         args = list()
         args.append(self.args[self.idx])
         self.drush_api.run_command('cache-clear', args, list())
-
