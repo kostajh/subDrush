@@ -198,10 +198,11 @@ class DrushAPI():
         """
         Returns a cache bin. If the bin doesn't exist, it is created.
         """
-        print('Creating cache bin for %s' % bin)
+        print('Getting cache bin for %s' % bin)
         cache_bin_name = hashlib.sha224(bin.encode('utf-8')).hexdigest()
         sublime_cache_path = sublime.cache_path()
         cache_bin = sublime_cache_path + "/" + "sublime-drush" + "/" + cache_bin_name
         if os.path.isdir(cache_bin) is False:
+            print('Created new cache bin: %s' % cache_bin)
             os.makedirs(cache_bin)
         return cache_bin
