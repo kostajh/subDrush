@@ -1,4 +1,5 @@
 import sublime_plugin
+from .commands import *
 from .lib.drush import DrushAPI
 
 
