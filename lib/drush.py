@@ -194,6 +194,7 @@ class DrushAPI():
             output.close()
             return drupal_root
         else:
+            # @TODO use `drush dd` to see if we can get Drupal root that way.
             # Default to Drush cache bin.
             print("Using 'drush' cache bin")
             self.get_cache_bin('drush')
