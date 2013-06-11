@@ -184,7 +184,7 @@ class DrushAPI():
             self.get_cache_bin(drupal_root)
             # Save path to Drupal root in working dir cache
             print('Saving path to drupal root in cache: %s' % drupal_root)
-            output = open(bin + "/drupal_root", 'wb')
+            output = open(bin, 'wb')
             pickle.dump(drupal_root, output)
             output.close()
             return drupal_root
