@@ -167,6 +167,7 @@ class DrushAPI():
                     return self.drupal_root
             else:
                 print('Cache is expired!')
+                bin.close()
         else:
             print('Cache bin is not a file, cannot load.')
 
