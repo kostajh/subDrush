@@ -187,10 +187,10 @@ class DrushAPI():
             del(paths[-1])
             drupal_root = "/".join(paths)
             # Create a cache bin for the Drupal root
-            self.get_cache_bin(self.working_dir)
+            new_cache_bin = self.get_cache_bin(self.working_dir) + "/drupal_root"
             # Save path to Drupal root in working dir cache
             print('Saving drupal_root "%s" in cache' % drupal_root)
-            output = open(bin, 'wb')
+            output = open(new_cache_bin, 'wb')
             pickle.dump(drupal_root, output)
             output.close()
             return drupal_root
