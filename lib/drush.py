@@ -10,11 +10,19 @@ import shutil
 import sublime
 
 
-class DrushAPI():
+class DrushAPI(object):
 
-    def __init__(self):
+    def __init__(self, view):
+        """
+        The `view` object is self.window.active_view() and is used to identify
+        the Drupal root.
+        """
         self.drupal_root = ""
         self.working_dir = ""
+        if view:
+            self.working_dir = view.window().folders()
+            self.set_working_dir(self.working_dir[0])
+            self.drupal_root = self.get_drupal_root()
 
     def get_drush_path(self):
         """
@@ -187,7 +195,8 @@ class DrushAPI():
             del(paths[-1])
             drupal_root = "/".join(paths)
             # Create a cache bin for the Drupal root
-            new_cache_bin = self.get_cache_bin(self.working_dir) + "/drupal_root"
+            new_cache_bin = self.get_cache_bin(self.working_dir) + \
+                "/drupal_root"
             # Save path to Drupal root in working dir cache
             print('Saving drupal_root "%s" in cache' % drupal_root)
             output = open(new_cache_bin, 'wb')

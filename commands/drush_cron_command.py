@@ -12,14 +12,11 @@ class DrushCronCommand(sublime_plugin.WindowCommand):
     """
 
     def run(self):
-        self.drush_api = DrushAPI()
-        self.view = self.window.active_view()
-        working_dir = self.view.window().folders()
-        self.drush_api.set_working_dir(working_dir[0])
+        self.drush_api = DrushAPI(self.window.active_view())
         self.drupal_root = self.drush_api.get_drupal_root()
         if self.drupal_root is "drush":
             sublime.status_message('Could not invoke cron as you are not '
-                                   'working in a Drupal directory')
+                                   'working in a Drupal directory!')
             return
         thread = DrushCronThread(self.window, self.drush_api)
         thread.start()

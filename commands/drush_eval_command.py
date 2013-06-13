@@ -44,10 +44,7 @@ class DrushEvalThread(threading.Thread):
         threading.Thread.__init__(self)
 
     def run(self):
-        drush_api = DrushAPI()
-        self.view = self.window.active_view()
-        working_dir = self.view.window().folders()
-        drush_api.set_working_dir(working_dir[0])
+        drush_api = DrushAPI(self.window.active_view())
         args = list()
         args.append(self.code)
         result = drush_api.run_command('php-eval', args, list())

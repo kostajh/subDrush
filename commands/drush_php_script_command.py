@@ -34,10 +34,8 @@ class DrushPhpScriptThread(threading.Thread):
         threading.Thread.__init__(self)
 
     def run(self):
-        drush_api = DrushAPI()
         self.view = self.window.active_view()
-        working_dir = self.view.window().folders()
-        drush_api.set_working_dir(working_dir[0])
+        drush_api = DrushAPI(self.view)
         file_name = self.view.file_name()
         args = list()
         args.append(file_name)

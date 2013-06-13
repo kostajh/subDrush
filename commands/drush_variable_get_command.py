@@ -14,14 +14,9 @@ class DrushVariableGetCommand(sublime_plugin.WindowCommand):
     quick_panel_command_selected_index = None
 
     def run(self):
-        self.drush_api = DrushAPI()
-        self.view = self.window.active_view()
-        working_dir = self.view.window().folders()
-        self.drush_api.set_working_dir(working_dir[0])
-        self.drupal_root = self.drush_api.get_drupal_root()
+        self.drush_api = DrushAPI(self.window.active_view())
         thread = DrushVariableGetAllThread(self.window,
-                                           self.drush_api,
-                                           self.drupal_root)
+                                           self.drush_api)
         thread.start()
         ThreadProgress(thread,
                        'Loading defined variables',
@@ -33,10 +28,9 @@ class DrushVariableGetAllThread(threading.Thread):
     """
     A thread to return a list of all variables.
     """
-    def __init__(self, window, drush_api, drupal_root):
+    def __init__(self, window, drush_api):
         self.window = window
         self.drush_api = drush_api
-        self.drupal_root = drupal_root
         threading.Thread.__init__(self)
 
     def run(self):
@@ -64,24 +58,24 @@ class DrushVariableGetAllThread(threading.Thread):
         thread = DrushVariableGetThread(self.window,
                                         self.variables,
                                         idx,
-                                        self.drush_api,
-                                        self.drupal_root)
+                                        self.drush_api)
         thread.start()
         ThreadProgress(thread,
-                       'Retrieving value of variable "%s"' % self.variables[idx][0],
-                       'Retrieved value of variable "%s"' % self.variables[idx][0])
+                       'Retrieving value of variable "%s"' %
+                       self.variables[idx][0],
+                       'Retrieved value of variable "%s"' %
+                       self.variables[idx][0])
 
 
 class DrushVariableGetThread(threading.Thread):
     """
     A thread to return the value of a variable.
     """
-    def __init__(self, window, args, idx, drush_api, drupal_root):
+    def __init__(self, window, args, idx, drush_api):
         self.window = window
         self.args = args
         self.idx = idx
         self.drush_api = drush_api
-        self.drupal_root = drupal_root
         threading.Thread.__init__(self)
 
     def run(self):

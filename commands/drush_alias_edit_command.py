@@ -14,13 +14,9 @@ class DrushAliasEditCommand(sublime_plugin.WindowCommand):
 
     def run(self):
         sublime.status_message('Loading Drush aliases...')
-        self.drush_api = DrushAPI()
-        self.view = self.window.active_view()
-        working_dir = self.view.window().folders()
-        self.drush_api.set_working_dir(working_dir[0])
-        self.drupal_root = self.drush_api.get_drupal_root()
+        self.drush_api = DrushAPI(self.window.active_view())
         alias_id = self.drush_api.get_site_alias_from_drupal_root(
-            self.drupal_root)
+            self.drush_api.get_drupal_root())
         if not alias_id:
             # Load all local aliases
             self.aliases = self.drush_api.get_local_site_aliases()

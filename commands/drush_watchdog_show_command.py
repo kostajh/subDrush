@@ -27,10 +27,7 @@ class DrushWatchdogShowThread(threading.Thread):
         threading.Thread.__init__(self)
 
     def run(self):
-        drush_api = DrushAPI()
-        self.view = self.window.active_view()
-        working_dir = self.view.window().folders()
-        drush_api.set_working_dir(working_dir[0])
+        drush_api = DrushAPI(self.window.active_view())
         watchdog = drush_api.run_command('watchdog-show', list(), list())
         if not watchdog:
             sublime.status_message('Could not find a Drupal directory')
