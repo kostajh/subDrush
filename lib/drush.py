@@ -21,7 +21,12 @@ class DrushAPI(object):
         self.working_dir = ""
         if view:
             self.working_dir = view.window().folders()
-            self.set_working_dir(self.working_dir[0])
+            if len(self.working_dir) > 0:
+                self.set_working_dir(self.working_dir[0])
+            else:
+                # If we only have one file open, set working dir based on the
+                # directory that the open file resides in.
+                self.working_dir = os.path.dirname(view.file_name())
             self.drupal_root = self.get_drupal_root()
 
     def get_drush_path(self):
@@ -160,6 +165,7 @@ class DrushAPI(object):
             return self.drupal_root
         if not self.working_dir:
             # If the working directory hasn't been set, return "drush"
+            print('Working directory is not set, returning "drush"')
             return 'drush'
 
         bin = self.get_cache_bin(self.working_dir) + "/drupal_root"
@@ -204,11 +210,25 @@ class DrushAPI(object):
             output.close()
             return drupal_root
         else:
-            # @TODO use `drush dd` to see if we can get Drupal root that way.
-            # Default to Drush cache bin.
-            print("Using 'drush' cache bin")
-            self.get_cache_bin('drush')
-            return 'drush'
+            # Use `drush dd` to see if we can get Drupal root that way.
+            command = []
+            command.append(self.get_drush_path())
+            command.append('dd')
+            command.append('--nocolor')
+            response = subprocess.Popen(command,
+                                        stdout=subprocess.PIPE,
+                                        cwd=self.working_dir
+                                        ).communicate()[0].decode('utf-8'
+                                                                  ).strip('\n')
+            # If `drush dd` returns a directory, then return that.
+            if os.path.isdir(response) is True:
+                print("`drush dd` found a directory: %s" % response)
+                return response
+            else:
+                # Default to Drush cache bin.
+                print("Using 'drush' cache bin")
+                self.get_cache_bin('drush')
+                return 'drush'
         return self.working_dir
 
     def get_cache_bin(self, bin):
