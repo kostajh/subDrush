@@ -1,6 +1,7 @@
 import json
 import threading
 from ..lib.drush import DrushAPI
+from ..lib.output import Output
 from ..lib.thread_progress import ThreadProgress
 
 import sublime
@@ -86,9 +87,4 @@ class DrushVariableGetThread(threading.Thread):
         variable = self.drush_api.run_command('variable-get', args, options)
         window = self.window
         if window:
-            output = window.create_output_panel("variable_get")
-            output.set_syntax_file("Packages/PHP/PHP.tmLanguage")
-            output.run_command('erase_view')
-            output.run_command('append', {'characters': "<?php\n"})
-            output.run_command('append', {'characters': variable})
-            window.run_command("show_panel", {"panel": "output.variable_get"})
+            Output(self.window, 'variable-get', 'PHP', variable).render()

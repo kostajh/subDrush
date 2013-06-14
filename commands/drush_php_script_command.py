@@ -1,6 +1,7 @@
 import threading
 from ..lib.drush import DrushAPI
 from ..lib.thread_progress import ThreadProgress
+from ..lib.output import Output
 
 import sublime
 import sublime_plugin
@@ -44,8 +45,4 @@ class DrushPhpScriptThread(threading.Thread):
             sublime.status_message('An error occurred when attempting to '
                                    'execute this script.')
             return
-        output = self.window.create_output_panel("script")
-        output.set_syntax_file("Packages/Text/Plain Text.tmLanguage")
-        output.run_command('erase_view')
-        output.run_command('append', {'characters': result})
-        self.window.run_command("show_panel", {"panel": "output.script"})
+        Output(self.window, 'script', 'Text', result).render()

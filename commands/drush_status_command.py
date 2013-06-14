@@ -1,6 +1,7 @@
 import threading
 from ..lib.drush import DrushAPI
 from ..lib.thread_progress import ThreadProgress
+from ..lib.output import Output
 
 import sublime_plugin
 
@@ -34,11 +35,5 @@ class DrushStatusThread(threading.Thread):
         options = list()
         options.append('--format=yaml')
         status = self.drush_api.run_command('core-status', list(), options)
-        print(status)
         if status:
-            output = self.window.create_output_panel("core-status")
-            output.set_syntax_file("Packages/YAML/YAML.tmLanguage")
-            output.run_command('erase_view')
-            output.run_command('append', {'characters': status})
-            self.window.run_command("show_panel",
-                                    {"panel": "output.core-status"})
+            Output(self.window, 'core-status', 'YAML', status).render()
