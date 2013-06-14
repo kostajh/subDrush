@@ -81,11 +81,14 @@ class DrushVariableGetThread(threading.Thread):
     def run(self):
         args = list()
         args.append(self.args[self.idx][0])
-        variable = self.drush_api.run_command('variable-get', args, list())
+        options = list()
+        options.append('--pipe')
+        variable = self.drush_api.run_command('variable-get', args, options)
         window = self.window
         if window:
             output = window.create_output_panel("variable_get")
-            output.set_syntax_file("Packages/Text/Plain Text.tmLanguage")
+            output.set_syntax_file("Packages/PHP/PHP.tmLanguage")
             output.run_command('erase_view')
+            output.run_command('append', {'characters': "<?php\n"})
             output.run_command('append', {'characters': variable})
             window.run_command("show_panel", {"panel": "output.variable_get"})
