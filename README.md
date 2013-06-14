@@ -48,7 +48,7 @@ Feel free to create your own [key bindings](http://docs.sublimetext.info/en/late
 
 ### Installation
 
-Clone this repository into `~/Library/Application Support/Sublime Text 3/Packages/`
+Clone this repository into the `Packages` directory, see the [Sublime Text 3 docs](http://www.sublimetext.com/docs/3/packages.html) for more information.
 
 ### Credits
 
