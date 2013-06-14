@@ -4,7 +4,7 @@
       "command": "drush_cache_clear"
     },
     {
-      "caption": "Drush: PHP-Eval (Evaluate PHP code after bootstrapping Drupal",
+      "caption": "Drush: PHP-Eval (Evaluate PHP code after bootstrapping Drupal)",
       "command": "drush_eval"
     },
     {
@@ -18,6 +18,10 @@
     {
       "caption": "Drush: Variable Get (Get a list of some or all site variables and values)",
       "command": "drush_variable_get"
+    },
+    {
+      "caption": "Drush: Core Status (Provides a birds-eye view of the current Drupal installation, if any)",
+      "command": "drush_status"
     },
     {
       "caption": "Sublime Drush: Clear Sublime Drush cache",

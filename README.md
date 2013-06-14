@@ -11,6 +11,7 @@ This is not an attempt to bring the entirety of Drush into Sublime Text. Instead
 |-----------------------------|-----------------------------------------------------------|--------|
 | `cache-clear`               | Clear a specific cache bin                                | core   |
 | `cache-clear all`           | Clear all caches                                          | core   |
+| `core-status`               | Provides a birds-eye view of the Drupal installation      | core   |
 | `watchdog-show`             | Displays the 10 most recent watchdog entries              | core   |
 | `variable-get`              | Displays the value of a Drupal variable                   | core   |
 | `cron`                      | Invokes cron for open Drupal directory                    | core   |

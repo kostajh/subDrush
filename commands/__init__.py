@@ -6,6 +6,7 @@ from .drush_alias_edit_command import DrushAliasEditCommand
 from .drush_php_script_command import DrushPhpScriptCommand
 from .drush_eval_command import DrushEvalCommand
 from .drush_cron_command import DrushCronCommand
+from .drush_status_command import DrushStatusCommand
 from .sublime_drush_cache_clear_command import SublimeDrushCacheClearCommand
 
 __all__ = [
@@ -13,6 +14,7 @@ __all__ = [
     'DrushCacheClearAllCommand',
     'DrushCronCommand',
     'DrushEvalCommand',
+    'DrushStatusCommand',
     'DrushPhpScriptCommand',
     'DrushVariableGetCommand',
     'DrushAliasEditCommand',
