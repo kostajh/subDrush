@@ -60,6 +60,7 @@ The ThreadProgress class is borrowed from [wbond's](https://github.com/wbond) [S
 ### License
 
 A Sublime Text 3 Plugin that integrates with Drush
+
 Copyright (C) 2013 Kosta Harlan
 
 This program is free software: you can redistribute it and/or modify
