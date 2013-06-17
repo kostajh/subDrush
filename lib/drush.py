@@ -35,14 +35,16 @@ class DrushAPI(object):
         Check if user has Drush 6 installed.
         """
         major_version = self.get_drush_version()
-        if major_version < 7:
+        if major_version < 6:
+            print("Drush major version outdated: %d" % major_version)
             sublime.status_message('Please upgrade to Drush 6!')
 
     def get_drush_version(self):
         """
         Return the Drush major version (5, 6 etc).
         """
-        result = subprocess.Popen([self.get_drush_path(), '--version', '--pipe'])
+        result = subprocess.Popen([self.get_drush_path(), '--version', '--pipe'],
+                                  stdout=subprocess.PIPE).communicate()[0].decode('utf-8')
         if not result:
             return 0
         return int(result[:1])

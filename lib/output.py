@@ -23,6 +23,7 @@ class Output(object):
         Create an output panel and display the output.
         """
         self.output_panel.run_command('append', {'characters': self.output})
+        self.output_panel.set_read_only(True)
         self.window.run_command("show_panel",
                                 {"panel": "output.%s" % self.command})
 
