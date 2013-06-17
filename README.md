@@ -17,6 +17,7 @@ This is not an attempt to bring the entirety of Drush into Sublime Text. Instead
 | `cron`                      | Invokes cron for open Drupal directory                    | core   |
 | `php-eval`                  | Evaluates selected text in the bootstrapped Drupal site   | core   |
 | `php-script`                | Executes open buffer as PHP script after Drupal bootstrap | core   |
+| `pm-list`                   | Show a list of available extensions (modules and themes)  | core   |
 | `alias-edit`                | Edit the Drush aliases (current site or choose from list) | custom |
 | `Clear Sublime Drush cache` | Clears Sublime Drush internal cache                       | custom |
 
