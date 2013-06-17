@@ -11,19 +11,18 @@ class Output(object):
     def __init__(self, window, command, syntax, output):
         self.window = window
         self.command = command
-        self.view = self.window.active_view()
+        self.output_panel = self.window.create_output_panel(self.command)
+        self.output_panel.set_read_only(False)
+        self.output_panel.run_command('erase_view')
         self.syntax = self.get_syntax_file(syntax)
+        self.output_panel.set_syntax_file(self.syntax)
         self.output = output
 
     def render(self):
         """
         Create an output panel and display the output.
         """
-        self.output_panel = self.window.create_output_panel(self.command)
-        self.output_panel.set_read_only(False)
-        self.output_panel.run_command('erase_view')
         self.output_panel.run_command('append', {'characters': self.output})
-        self.output_panel.set_syntax_file(self.syntax)
         self.window.run_command("show_panel",
                                 {"panel": "output.%s" % self.command})
         self.output_panel.set_read_only(True)
@@ -42,7 +41,7 @@ class Output(object):
             return "Packages/Text/Plain Text.tmLanguage"
 
     def renderWindow(self):
-        self.view.run_command("render_window_results",
+        self.window.active_view().run_command("render_window_results",
                               {"formatted_results": self.output,
                               "command": self.command,
                               "syntax": self.syntax})
