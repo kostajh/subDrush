@@ -29,6 +29,24 @@ class DrushAPI(object):
                 self.working_dir = os.path.dirname(view.file_name())
             self.drupal_root = self.get_drupal_root()
 
+
+    def check_requirements(self):
+        """
+        Check if user has Drush 6 installed.
+        """
+        major_version = self.get_drush_version()
+        if major_version < 7:
+            sublime.status_message('Please upgrade to Drush 6!')
+
+    def get_drush_version(self):
+        """
+        Return the Drush major version (5, 6 etc).
+        """
+        result = subprocess.Popen([self.get_drush_path(), '--version', '--pipe'])
+        if not result:
+            return 0
+        return int(result[:1])
+
     def get_drush_path(self):
         """
         Get the path to the Drush executable.
