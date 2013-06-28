@@ -1,5 +1,6 @@
 subDrush (Sublime Drush plugin)
 ===============================
+<img src="http://designhammer.com/sites/default/files/subdrush-package.png" align="right" alt="subDrush plugin">
 
 This is plugin for Sublime Text 3 (ST3) that exposes a subset of [Drush](https://drupal.org/project/drush) functionality to facilitate Drupal development.
 
