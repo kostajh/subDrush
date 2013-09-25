@@ -146,7 +146,7 @@ class DrushAPI(object):
         aliases = json.loads(aliases)
         local_aliases = list()
         for alias, values in aliases.items():
-            local_aliases.append(values[u'#id'].rsplit('.', 1)[0])
+            local_aliases.append(values[u'#name'].rsplit('.', 1)[0])
         return local_aliases
 
     def get_site_alias_from_drupal_root(self, directory):
@@ -168,7 +168,7 @@ class DrushAPI(object):
         for alias, values in drush_aliases.items():
             if 'root' in values and directory == values[u'root'].replace(
                     '\/', '/'):
-                return values['#id'].replace('@', '').rsplit('.', 1)[0]
+                return values['#name'].replace('@', '').rsplit('.', 1)[0]
         return False
 
     def set_working_dir(self, directory):
