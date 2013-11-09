@@ -27,7 +27,7 @@ class DrushCronCommand(sublime_plugin.WindowCommand):
 
 class DrushCronThread(threading.Thread):
     """
-    A thread to clear all caches
+    A thread to run cron.
     """
     def __init__(self, window, drush_api):
         self.window = window
