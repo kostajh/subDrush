@@ -6,7 +6,7 @@ import sublime
 import sublime_plugin
 
 
-class DrushUpdateDbCommand(sublime_plugin.WindowCommand):
+class DrushUpdateDbCommand (sublime_plugin.WindowCommand):
     """
     A command to invoke update-db.
     """
@@ -22,7 +22,8 @@ class DrushUpdateDbCommand(sublime_plugin.WindowCommand):
         thread.start()
         ThreadProgress(thread,
                        'Invoking update-db for %s' % self.drupal_root,
-                       "Update.php was successfully run on '%s'" % self.drupal_root)
+                       "Update.php was successfully run on '%s'" %
+                       self.drupal_root)
 
 
 class DrushUpdateDbThread(threading.Thread):
@@ -35,5 +36,4 @@ class DrushUpdateDbThread(threading.Thread):
         threading.Thread.__init__(self)
 
     def run(self):
-        updb = self.drush_api.run_command('updatedb', list(), list())
-
+        self.drush_api.run_command('updatedb', list(), list())

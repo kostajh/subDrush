@@ -25,7 +25,7 @@
     },
     {
         "caption": "Drush: Update DB (Run update.php)",
-        "command": "drush_updatedb"
+        "command": "drush_update_db"
     },
     {
         "caption": "Drush: Core Status (Provides a birds-eye view of the current Drupal installation, if any)",
