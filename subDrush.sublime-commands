@@ -1,50 +1,50 @@
 [
     {
-      "caption": "Drush: Cache Clear (Clear a specific cache, or all drupal caches)",
-      "command": "drush_cache_clear"
+        "caption": "Drush: Cache Clear (Clear a specific cache, or all drupal caches)",
+        "command": "drush_cache_clear"
     },
     {
-      "caption": "Drush: PHP-Eval (Evaluate PHP code after bootstrapping Drupal)",
-      "command": "drush_eval"
+        "caption": "Drush: PHP-Eval (Evaluate PHP code after bootstrapping Drupal)",
+        "command": "drush_eval"
     },
     {
-      "caption": "Drush: PM-List (Show a list of available extensions (modules and themes)",
-      "command": "drush_pm_list"
+        "caption": "Drush: PM-List (Show a list of available extensions (modules and themes)",
+        "command": "drush_pm_list"
     },
     {
-      "caption": "Drush: PHP-Script (Runs the active buffer as a php script after a full Drupal bootstrap)",
-      "command": "drush_php_script"
+        "caption": "Drush: PHP-Script (Runs the active buffer as a php script after a full Drupal bootstrap)",
+        "command": "drush_php_script"
     },
     {
-      "caption": "Drush: Cache Clear All (Clear all caches)",
-      "command": "drush_cache_clear_all"
+        "caption": "Drush: Cache Clear All (Clear all caches)",
+        "command": "drush_cache_clear_all"
     },
     {
-      "caption": "Drush: Variable Get (Get a list of some or all site variables and values)",
-      "command": "drush_variable_get"
+        "caption": "Drush: Variable Get (Get a list of some or all site variables and values)",
+        "command": "drush_variable_get"
     },
     {
-      "caption": "Drush: Update DB (Run update.php)",
-      "command": "drush_updatedb",
+        "caption": "Drush: Update DB (Run update.php)",
+        "command": "drush_updatedb"
     },
     {
-      "caption": "Drush: Core Status (Provides a birds-eye view of the current Drupal installation, if any)",
-      "command": "drush_status"
+        "caption": "Drush: Core Status (Provides a birds-eye view of the current Drupal installation, if any)",
+        "command": "drush_status"
     },
     {
-      "caption": "Sublime Drush: Clear Sublime Drush cache",
-      "command": "sublime_drush_cache_clear"
+        "caption": "Sublime Drush: Clear Sublime Drush cache",
+        "command": "sublime_drush_cache_clear"
     },
     {
-      "caption": "Drush: Watchdog Show",
-      "command": "drush_watchdog_show",
+        "caption": "Drush: Watchdog Show",
+        "command": "drush_watchdog_show"
     },
     {
-      "caption": "Sublime Drush: Alias Edit",
-      "command": "drush_alias_edit",
+        "caption": "Sublime Drush: Alias Edit",
+        "command": "drush_alias_edit"
     },
     {
-      "caption": "Drush: Cron",
-      "command": "drush_cron",
+        "caption": "Drush: Cron",
+        "command": "drush_cron"
     }
 ]
