@@ -8,6 +8,7 @@ from .drush_eval_command import DrushEvalCommand
 from .drush_pm_list_command import DrushPmListCommand
 from .drush_cron_command import DrushCronCommand
 from .drush_status_command import DrushStatusCommand
+from .drush_updatedb_command import DrushUpdateDbCommand
 from .sublime_drush_cache_clear_command import SublimeDrushCacheClearCommand
 from ..lib.output import RenderWindowResultsCommand
 
@@ -22,6 +23,7 @@ __all__ = [
     'DrushVariableGetCommand',
     'DrushAliasEditCommand',
     'DrushWatchdogShowCommand',
+    'DrushUpdateDbCommand',
     'SublimeDrushCacheClearCommand',
     'RenderWindowResultsCommand',
 ]
