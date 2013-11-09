@@ -44,13 +44,14 @@ Feel free to create your own [key bindings](http://docs.sublimetext.info/en/late
 
 ### Requirements
 
-- [Drush 6](https://drupal.org/project/drush). Drush 5 may work but this plugin is developed against Drush 6.
 - Sublime Text 3 (Build 3033 or later)
-- Only Mac OS 10.8 has been tested so far. Linux and Windows should work fine though.
+- Only Mac OS 10.8 and Linux (specifically Arch Linux) are known to have been tested. Windows should work fine though.
+
+The latest stable release of Drush comes bundled with this plugin. By default, subDrush will use its own bundled version of Drush. However, if you prefer to use another version of Drush (for example, if you are developing with Drupal 8 and need Drush 7), then check out Preferences > Package Settings > subDrush > Settings - Default for instructions on how to use an alternate version of Drush. Drush 5 is not supported.
 
 ### Installation
 
-Clone this repository into the `Packages` directory, see the [Sublime Text 3 docs](http://www.sublimetext.com/docs/3/packages.html) for more information.
+Use Sublime Package Control and search for `subDrush`. Alternatively, clone this repository into the `Packages` directory - see the [Sublime Text 3 docs](http://www.sublimetext.com/docs/3/packages.html) for more information.
 
 ### Credits
 

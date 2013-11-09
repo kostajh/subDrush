@@ -51,9 +51,26 @@ class DrushAPI(object):
 
     def get_drush_path(self):
         """
-        Get the path to the Drush executable.
+        Get the path to the Drush executable. It's either in Packages or
+        Installed Packages, depending on the user's installation method.
+        If either of those fail, check for system-wide Drush.
         """
-        return shutil.which('drush')
+        settings = sublime.load_settings("subDrush.sublime-settings")
+        drush_path = settings.get('drush_executable')
+        if str(drush_path) != 'subDrush':
+            print('subDrush: Using user defined path to Drush: %s' % drush_path)
+            if not os.path.exists(drush_path):
+                sublime.error_message('You specified "%s" as the path to Drush, but this does not seem to be valid. Please fix your settings at Preferences > Package Settings > subDrush > Settings - User' % drush_path)
+                return False
+            return drush_path
+        print('subDrush: Using subDrush\'s bundled version of Drush.')
+        if os.path.exists("%s/subDrush/lib/drush/drush" % sublime.packages_path()):
+            return "%s/subDrush/lib/drush/drush" % sublime.packages_path()
+        elif os.path.exists("%s/subDrush/lib/drush/drush" % sublime.installed_packages_path()):
+            return "%s/subDrush/lib/drush/drush" % sublime.installed_packages_path()
+        else:
+            print('subDrush: Using system-wide Drush install.')
+            return shutil.which('drush')
 
     def load_command_info(self, command):
         """
