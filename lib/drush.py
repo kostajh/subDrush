@@ -132,6 +132,20 @@ class DrushAPI(object):
         command.append('--root=%s' % self.get_drupal_root())
         return command
 
+    def parse_backend_output(data, type="normal"):
+        data = data.replace('\0', '')
+        backend_json = dict(log=list(), message=list())
+        backend_output = ''
+        message_type = "log"
+        for line in data.splitlines():
+            backend_output = line.replace('DRUSH_BACKEND:', '')
+            if ('DRUSH_BACKEND_OUTPUT_START>>>' in line):
+                message_type = "message"
+                backend_output = line.replace('DRUSH_BACKEND_OUTPUT_START>>>',
+                                              '').replace('<<<DRUSH_BACKEND_OUTPUT_END', '')
+            backend_json[message_type].append(json.loads(backend_output))
+        return backend_json
+
     def run_command(self, command, args, options):
         """
         Run a Drush command. args and options must both be lists.
@@ -145,8 +159,20 @@ class DrushAPI(object):
             for opt in options:
                 cmd.append(opt)
         cmd.append('--nocolor')
+        cmd.append('--backend')
         print(cmd)
         response = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+        args = ' '.join(cmd)
+        try:
+            backend_output = subprocess.check_output(args, stderr=subprocess.STDOUT,
+                                                     shell=True,
+                                                     universal_newlines=True)
+            data = self.parse_backend_output(backend_output)
+
+        except subprocess.CalledProcessError as e:
+            data = self.parse_backend_output(e.output, "error")
+        import pprint
+        pprint.pprint(data)
         decoded = response.communicate()[0].decode('utf-8')
         return decoded.replace('\r\n', '\n')
 
