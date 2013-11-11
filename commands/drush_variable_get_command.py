@@ -39,10 +39,19 @@ class DrushVariableGetAllThread(threading.Thread):
         options = list()
         options.append('--format=json')
         variables = self.drush_api.run_command('variable-get', args, options)
-        if not variables:
+        if variables is False:
             sublime.status_message('No variables were found. Make sure you'
                                    ' are working in a Drupal directory.')
-            return
+            return False
+        try:
+            variable_data = json.loads(variables)
+        except Exception as e:
+            sublime.status_message('Failed to load data from variable-get \
+                                    command')
+            print('subDrush: Failed to load data for variable-get command: %s'
+                  % e)
+            Output(self.window, 'variable-get', 'YAML', variable_data['message']).render()
+            return False
         variable_data = json.loads(variables)
         self.variables = []
         for key, value in variable_data.items():

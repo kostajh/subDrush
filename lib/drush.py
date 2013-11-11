@@ -10,6 +10,8 @@ import copy
 
 import sublime
 
+from ..lib.output import Output
+
 
 class DrushAPI(object):
 
@@ -212,8 +214,10 @@ class DrushAPI(object):
                 else:
                     error_string = ''.join("%s: \"%s\"" % (k, v[0]))
             print('subDrush: Error returned from Drush: %s'
-                  % print(error_string))
-            return error_string
+                  % error_string)
+            Output(sublime.active_window(), 'drush-error', 'YAML',
+                   error_string).render()
+            return False
 
     def get_local_site_aliases(self):
         """
