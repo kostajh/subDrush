@@ -48,7 +48,13 @@ Feel free to create your own [key bindings](http://docs.sublimetext.info/en/late
 - Sublime Text 3 (Build 3033 or later)
 - Only Mac OS 10.8 and Linux (specifically Arch Linux) are known to have been tested. Windows should work fine though.
 
+#### Drush
+
 The latest stable release of Drush comes bundled with this plugin. By default, subDrush will use its own bundled version of Drush. However, if you prefer to use another version of Drush (for example, if you are developing with Drupal 8 and need Drush 7), then check out Preferences > Package Settings > subDrush > Settings - Default for instructions on how to use an alternate version of Drush. Drush 5 is not supported.
+
+#### Drupal
+
+Some commands don't work consistently with Drupal 6 (for example, `php-script` and `php-eval`). All commands are tested against Drupal 7.
 
 ### Installation
 
