@@ -32,4 +32,4 @@ class DrushAliasEditCommand(sublime_plugin.WindowCommand):
         filename = expanduser("~") + '/.drush/' + self.aliases[idx].replace(
             '@', '') + ".aliases.drushrc.php"
         self.window.open_file(filename)
-        sublime.status_message('Loaded %', filename)
+        sublime.status_message('Loaded %s' % filename)

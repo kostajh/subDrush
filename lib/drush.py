@@ -6,8 +6,11 @@ import subprocess
 import json
 import time
 import shutil
+import copy
 
 import sublime
+
+from ..lib.output import Output
 
 
 class DrushAPI(object):
@@ -29,7 +32,6 @@ class DrushAPI(object):
                 self.working_dir = os.path.dirname(view.file_name())
             self.drupal_root = self.get_drupal_root()
 
-
     def check_requirements(self):
         """
         Check if user has Drush 6 installed.
@@ -43,8 +45,11 @@ class DrushAPI(object):
         """
         Return the Drush major version (5, 6 etc).
         """
-        result = subprocess.Popen([self.get_drush_path(), '--version', '--pipe'],
-                                  stdout=subprocess.PIPE).communicate()[0].decode('utf-8')
+        result = subprocess.Popen([self.get_drush_path(),
+                                  '--version',
+                                  '--pipe'],
+                                  stdout=subprocess.PIPE).communicate(
+            )[0].decode('utf-8')
         if not result:
             return 0
         return int(result[:1])
@@ -58,16 +63,24 @@ class DrushAPI(object):
         settings = sublime.load_settings("subDrush.sublime-settings")
         drush_path = settings.get('drush_executable')
         if str(drush_path) != 'subDrush':
-            print('subDrush: Using user defined path to Drush: %s' % drush_path)
+            print('subDrush: Using user defined path to Drush: %s'
+                  % drush_path)
             if not os.path.exists(drush_path):
-                sublime.error_message('You specified "%s" as the path to Drush, but this does not seem to be valid. Please fix your settings at Preferences > Package Settings > subDrush > Settings - User' % drush_path)
+                sublime.error_message('You specified "%s" as the path to \
+                Drush but this does not seem to be valid. Please fix your \
+                settings at Preferences > Package Settings > subDrush > \
+                Settings - User'
+                                      % drush_path)
                 return False
             return drush_path
         print('subDrush: Using subDrush\'s bundled version of Drush.')
-        if os.path.exists("%s/subDrush/lib/drush/drush" % sublime.packages_path()):
+        if os.path.exists("%s/subDrush/lib/drush/drush"
+                          % sublime.packages_path()):
             return "%s/subDrush/lib/drush/drush" % sublime.packages_path()
-        elif os.path.exists("%s/subDrush/lib/drush/drush" % sublime.installed_packages_path()):
-            return "%s/subDrush/lib/drush/drush" % sublime.installed_packages_path()
+        elif os.path.exists("%s/subDrush/lib/drush/drush"
+                            % sublime.installed_packages_path()):
+            return "%s/subDrush/lib/drush/drush" % \
+                sublime.installed_packages_path()
         else:
             print('subDrush: Using system-wide Drush install.')
             return shutil.which('drush')
@@ -132,6 +145,34 @@ class DrushAPI(object):
         command.append('--root=%s' % self.get_drupal_root())
         return command
 
+    def parse_backend_output(self, data, type="normal"):
+        data_raw = copy.copy(data).replace('\0', '')
+        data = data.replace('\0', '')
+        backend_json = dict(log=list(), message=list(), message_raw='')
+        backend_output = ''
+        message_raw = ''
+        message_type = "log"
+        for line in data.splitlines():
+            if 'DRUSH_BACKEND:' in line:
+                data_raw.replace(line, '')
+                backend_output = line.replace('DRUSH_BACKEND:', '')
+            elif ('DRUSH_BACKEND_OUTPUT_START>>>' in line):
+                data_raw.replace(line, '')
+                message_type = "message"
+                backend_output = line.replace(
+                    'DRUSH_BACKEND_OUTPUT_START>>>',
+                    '').replace('<<<DRUSH_BACKEND_OUTPUT_END', '')
+            else:
+                # Build the string of data to display to user.
+                message_raw += "%s\n" % line
+            try:
+                json_data = json.loads(backend_output)
+                backend_json[message_type].append(json_data)
+            except Exception as e:
+                print('subDrush: Error on json.loads: %s' % e)
+        backend_json['message_raw'] = message_raw
+        return backend_json
+
     def run_command(self, command, args, options):
         """
         Run a Drush command. args and options must both be lists.
@@ -145,10 +186,39 @@ class DrushAPI(object):
             for opt in options:
                 cmd.append(opt)
         cmd.append('--nocolor')
-        print(cmd)
-        response = subprocess.Popen(cmd, stdout=subprocess.PIPE)
-        decoded = response.communicate()[0].decode('utf-8')
-        return decoded.replace('\r\n', '\n')
+        cmd.append('--backend')
+
+        print('subDrush: Call to Drush: %s' % ' '.join(cmd))
+        try:
+            backend_output = subprocess.check_output(cmd,
+                                                     stderr=subprocess.STDOUT,
+                                                     universal_newlines=True)
+            data = self.parse_backend_output(backend_output)
+            if data['message_raw']:
+                return data['message_raw'].replace('\n', "\n")
+            elif data['message'][0]['output']:
+                return data['message'][0]['output'].replace('\n', "\n")
+            else:
+                print('subDrush: Failed to get output!')
+                return 'Failed to get output!'
+        except subprocess.CalledProcessError as e:
+            data = self.parse_backend_output(e.output, "error")
+            error_log = data['message'][0]['error_log']
+            pairs = [(k, v) for (k, v) in error_log.items()]
+            error_string = ''
+            for k, v in pairs:
+                # Format as YAML
+                if error_string:
+                    error_string = ''.join("%s\n%s: \"%s\""
+                                           % (error_string, k, v[0]))
+                else:
+                    error_string = ''.join("%s: \"%s\"" % (k, v[0]))
+            print('subDrush: Error returned from Drush: %s'
+                  % error_string)
+            cmd_string_error = 'COMMAND_FAILURE: "%s"' % ' '.join(cmd)
+            Output(sublime.active_window(), 'drush-error', 'YAML',
+                   cmd_string_error + "\n" + error_string).render()
+            return False
 
     def get_local_site_aliases(self):
         """
