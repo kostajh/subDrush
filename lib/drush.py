@@ -215,8 +215,9 @@ class DrushAPI(object):
                     error_string = ''.join("%s: \"%s\"" % (k, v[0]))
             print('subDrush: Error returned from Drush: %s'
                   % error_string)
+            cmd_string_error = 'COMMAND_FAILURE: "%s"' % ' '.join(cmd)
             Output(sublime.active_window(), 'drush-error', 'YAML',
-                   error_string).render()
+                   cmd_string_error + "\n" + error_string).render()
             return False
 
     def get_local_site_aliases(self):
